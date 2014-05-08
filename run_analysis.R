@@ -65,17 +65,22 @@ if (!file.exists(raw.data.file)) {
 message(sprintf("Getting list of files in \"%s\"...", raw.data.file))
 zip.list <- unzip(raw.data.file, list=TRUE)
 zip.list <- zip.list[grepl("[.]txt$", zip.list$Name) & zip.list$Length > 0,]
-message(sprintf("Found %d files with size greater than zero.", 
+message(sprintf("Found %d text files with size greater than zero:", 
                 nrow(zip.list)))
 
-message("Getting files names for training and test data...")
+zip.file.activity_labels <- zip.list[which(grepl("activity_labels[.]txt$", 
+                                           zip.list$Name)), c("Name")]
+zip.file.features <- zip.list[which(grepl("features[.]txt$", 
+                                             zip.list$Name)), c("Name")]
+message("    2 files with metadata.")
+
 zip.list.train <- as.list(zip.list[grepl("train[.]txt$", zip.list$Name), 
                                    c("Name")])
-message(sprintf("Found %d files with training data.", length(zip.list.train)))
+message(sprintf("    %d files with training data.", length(zip.list.train)))
 
 zip.list.test <- as.list(zip.list[grepl("test[.]txt$", zip.list$Name), 
                                   c("Name")])
-message(sprintf("Found %d files with test data.", length(zip.list.test)))
+message(sprintf("    %d files with test data.", length(zip.list.test)))
 
 names.train <- lapply(zip.list.train, 
                       function (s) sub("_train[.]txt$", "", 
@@ -98,6 +103,10 @@ names(zip.list.test) <- names.test
 ############################################################
 # Loading data from zip file                               #                                                                      
 ############################################################
+
+message("Loading metadata...")
+activity_labels <- load.with.msg(raw.data.file, zip.file.activity_labels)
+features <- load.with.msg(raw.data.file, zip.file.features)
 
 # Load training data
 message("Loading training data (can take some time...)")
