@@ -100,8 +100,9 @@ if (!assertion.datanames) {
 }
 
 names(names.train) <- names.train
+names(names.test) <- names.test
+
 names(zip.list.train) <- names.train
-names(names.test) <. names.test
 names(zip.list.test) <- names.test
 
 ############################################################
@@ -140,8 +141,9 @@ if (!assertion.datacols) {
 ############################################################
 
 message("Mergin training and test datasets (assignment instruction 1)")
+# Merge training and test datasets
 data <- lapply(names.train, 
-               function (n) rbind(data.train[[n]], data.test[[n]]))
+               function (n) rbind(dmesata.train[[n]], data.test[[n]]))
 
 ############################################################
 # Assignment instruction 3                                 #
@@ -155,21 +157,30 @@ data <- lapply(names.train,
 message(paste("Add activity labels and feature names to datasets",
               "(assignment instruction 3-4)"))
 
-names(activity_labels) <- c("activityCode", "activityName")
+# Name columns in activity_labels
+names(activity_labels) <- c("activityCode", "activity")
+# Name columns in features
 names(features) <- c("vectorColumn", "feature")
 # Make sure features is ordered by vectorColumn number
-features <- <- features[order(features[,1]),]
+features <- features[order(features[,"vectorColumn"]),]
 
-# Put feature names as column names for size 561 vectors
+# Put feature names as column names for the 561-feature vectors dataset
 names(data[["X"]]) <- features[,"feature"]
+
+# Name columns in subject and activity list datasets
 names(data[["subject"]]) <- c("subject")
 names(data[["y"]]) <- c("activityCode")
 
-# NEXT THREE LINES TODO
-data[["X"]][,"activityCode"] <- data[["y"]][,"activityCode"] 
-data[["X"]][,"subject"] <- data[["x"]][,"subject"]
+# Add new columns with subject and activity code data to 
+# the 561-feature vectors dataset
+data[["X"]]$activityCode <- data[["y"]]$activityCode 
+data[["X"]]$subject <- factor(data[["subject"]]$subject)
+
+# Merge 
 data[["X"]] <- merge(data[["X"]], activity_labels, by="activityCode")
 
+# Remove activityCode column from 561-feature vectors dataset
+data[["X"]]$activityCode <- NULL
 
 ############################################################
 # Assignment instruction 2                                 #
@@ -177,8 +188,17 @@ data[["X"]] <- merge(data[["X"]], activity_labels, by="activityCode")
 # deviation for each measurement.                          #                                      
 ############################################################
 
-message("TODO: Performing assignment instruction 2")
+message(paste("Creating tidy dataset containing only means and standard",
+              "deviations (assignment instruction 2)"))
 
+# Select columns for mean/sd dataset by searching for the strings 
+# "mean()" and "std()" in the column names (features)
+names.mean.sd <- c("subject", "activity", 
+                   grep("std\\(\\)|mean\\(\\)", 
+                        names(data[["X"]]), value=TRUE))
+
+# Create tidy mean/sd dataset
+data.mean.sd <- data[["X"]][,names.mean.sd]
 
 ############################################################
 # Assignment instruction 5                                 #
