@@ -90,14 +90,18 @@ names.test <- lapply(zip.list.test,
                      function (s) sub("_test[.]txt$", "", 
                                       tail(strsplit(s, "/")[[1]], 1)))
 
-assertion.datanames <- identical(names.train, names.test)
+assertion.datanames <- identical(sort(unlist(names.train)), 
+                                 sort(unlist(names.test)))
+
 message(sprintf("Checking if same files exist for training and test data: %s", 
                 assertion.datanames))
 if (!assertion.datanames) {
     stop("Training and test data must have same file structure!")
 }
 
+names(names.train) <- names.train
 names(zip.list.train) <- names.train
+names(names.test) <. names.test
 names(zip.list.test) <- names.test
 
 ############################################################
@@ -135,7 +139,19 @@ if (!assertion.datacols) {
 # data set.                                                #
 ############################################################
 
-message("TODO: Performing assignment instruction 1")
+message("Mergin training and test datasets (assignment instruction 1)")
+data <- lapply(names.train, 
+               function (n) rbind(data.train[[n]], data.test[[n]]))
+
+############################################################
+# Assignment instruction 3                                 #
+# Use descriptive activity names to name the activities    #
+# in the data set.                                         #
+# Assignment instruction 4                                 #
+# Appropriately label the data set with descriptive        #
+# activity names.                                          #
+############################################################
+
 
 ############################################################
 # Assignment instruction 2                                 #
@@ -145,21 +161,6 @@ message("TODO: Performing assignment instruction 1")
 
 message("TODO: Performing assignment instruction 2")
 
-############################################################
-# Assignment instruction 3                                 #
-# Use descriptive activity names to name the activities    #
-# in the data set.                                         #
-############################################################
-
-message("TODO: Performing assignment instruction 3")
-
-############################################################
-# Assignment instruction 4                                 #
-# Appropriately label the data set with descriptive        #
-# activity names.
-############################################################
-
-message("TODO: Performing assignment instruction 4")
 
 ############################################################
 # Assignment instruction 5                                 #
