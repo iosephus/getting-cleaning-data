@@ -152,6 +152,24 @@ data <- lapply(names.train,
 # activity names.                                          #
 ############################################################
 
+message(paste("Add activity labels and feature names to datasets",
+              "(assignment instruction 3-4)"))
+
+names(activity_labels) <- c("activityCode", "activityName")
+names(features) <- c("vectorColumn", "feature")
+# Make sure features is ordered by vectorColumn number
+features <- <- features[order(features[,1]),]
+
+# Put feature names as column names for size 561 vectors
+names(data[["X"]]) <- features[,"feature"]
+names(data[["subject"]]) <- c("subject")
+names(data[["y"]]) <- c("activityCode")
+
+# NEXT THREE LINES TODO
+data[["X"]][,"activityCode"] <- data[["y"]][,"activityCode"] 
+data[["X"]][,"subject"] <- data[["x"]][,"subject"]
+data[["X"]] <- merge(data[["X"]], activity_labels, by="activityCode")
+
 
 ############################################################
 # Assignment instruction 2                                 #
