@@ -43,7 +43,7 @@ tidy.averages.file <- "averages-tidy.txt"
 ################################################################################
 
 ############################################################
-# Conditional data download                                #                                                             
+# Conditional data download                                # 
 ############################################################
 
 # Check if data file exists in working directory, otherwise donwload it.
@@ -60,7 +60,7 @@ if (!file.exists(raw.data.file)) {
 }
 
 ############################################################
-# Analize zip file structure                               #                                                             
+# Analize zip file structure                               #
 ############################################################
 
 # List zipfile contents
@@ -109,7 +109,7 @@ load.list.test <- as.list(zfilenames.test)
 names(load.list.test) <- names.test
 
 ############################################################
-# Loading data from zip file                               #                                                                      
+# Loading data from zip file                               # 
 ############################################################
 
 message("Loading metadata...")
@@ -207,7 +207,7 @@ data[["X"]]$subject <- info$subject
 ############################################################
 # Assignment instruction 2                                 #
 # Extract only the measurements on the mean and standard   #
-# deviation for each measurement.                          #                                      
+# deviation for each measurement.                          #                                     
 ############################################################
 
 message(paste("Creating tidy dataset containing only means and standard",
@@ -226,7 +226,7 @@ data.mean.sd <- data[["X"]][,names.mean.sd]
 # Assignment instruction 5                                 #
 # Create a second, independent tidy data set with the      #
 # average of each variable for each activity and each      #
-# subject.                                                 #                                                             
+# subject.                                                 #                       
 ############################################################
 
 message(paste("Creating tidy dataset with averages per subject/activity", 
