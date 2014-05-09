@@ -4,7 +4,6 @@
 ##                                                                            ##
 ################################################################################
 
-
 ################################################################################
 ## Function definition section                                                ##
 ##                                                                            ##
@@ -19,6 +18,7 @@ load.with.msg <- function (zipfile, f) {
     #               nrow(df), ncol(df)))
     df
 }
+
 
 ################################################################################
 ## Parameter definition section                                               ##
@@ -63,35 +63,27 @@ if (!file.exists(raw.data.file)) {
 
 # List zipfile contents
 message(sprintf("Getting list of files in \"%s\"...", raw.data.file))
-zip.list <- unzip(raw.data.file, list=TRUE)
-zip.list <- zip.list[grepl("[.]txt$", zip.list$Name) & zip.list$Length > 0,]
+zfiles <- unzip(raw.data.file, list=TRUE)
+zfilenames <- zfiles[grepl("[.]txt$", zfiles$Name) & zfiles$Length > 0,c("Name")]
 message(sprintf("Found %d text files with size greater than zero:", 
-                nrow(zip.list)))
+                length(zfilenames)))
 
-zip.file.activity_labels <- zip.list[which(grepl("activity_labels[.]txt$", 
-                                           zip.list$Name)), c("Name")]
-zip.file.features <- zip.list[which(grepl("features[.]txt$", 
-                                             zip.list$Name)), c("Name")]
+zfilename.activity_labels <- grep("activity_labels[.]txt$", zfilenames, value=TRUE)[[1]]
+zfilename.features <- grep("features[.]txt$", zfilenames, value=TRUE)[[1]]
+
 message("    2 files with metadata.")
 
-zip.list.train <- as.list(zip.list[grepl("train[.]txt$", zip.list$Name), 
-                                   c("Name")])
-message(sprintf("    %d files with training data.", length(zip.list.train)))
+zfilenames.train <- grep("_train[.]txt$", zfilenames, value=TRUE)
+message(sprintf("    %d files with training data.", length(zfilenames.train)))
 
-zip.list.test <- as.list(zip.list[grepl("test[.]txt$", zip.list$Name), 
-                                  c("Name")])
-message(sprintf("    %d files with test data.", length(zip.list.test)))
+zfilenames.test <- grep("_test[.]txt$", zfilenames, value=TRUE)
+message(sprintf("    %d files with test data.", length(zfilenames.test)))
 
-names.train <- lapply(zip.list.train, 
-                      function (s) sub("_train[.]txt$", "", 
-                                       tail(strsplit(s, "/")[[1]], 1)))
+names.train <- sub("_train[.]txt$", "", basename(zfilenames.train))
+names.test <- sub("_test[.]txt$", "", basename(zfilenames.test))
 
-names.test <- lapply(zip.list.test, 
-                     function (s) sub("_test[.]txt$", "", 
-                                      tail(strsplit(s, "/")[[1]], 1)))
-
-assertion.datanames <- identical(sort(unlist(names.train)), 
-                                 sort(unlist(names.test)))
+assertion.datanames <- identical(sort(names.train), 
+                                 sort(names.test))
 
 message(sprintf("Checking if same files exist for training and test data: %s", 
                 assertion.datanames))
@@ -99,29 +91,29 @@ if (!assertion.datanames) {
     stop("Training and test data must have same file structure!")
 }
 
-names(names.train) <- names.train
-names(names.test) <- names.test
+load.list.train <- as.list(zfilenames.train)
+names(load.list.train) <- names.train
 
-names(zip.list.train) <- names.train
-names(zip.list.test) <- names.test
+load.list.test <- as.list(zfilenames.test)
+names(load.list.test) <- names.test
 
 ############################################################
 # Loading data from zip file                               #                                                                      
 ############################################################
 
 message("Loading metadata...")
-activity_labels <- load.with.msg(raw.data.file, zip.file.activity_labels)
-features <- load.with.msg(raw.data.file, zip.file.features)
+activity_labels <- load.with.msg(raw.data.file, zfilename.activity_labels)
+features <- load.with.msg(raw.data.file, zfilename.features)
 
 # Load training data
 message("Loading training data (can take some time...)")
-data.train <- lapply(zip.list.train, 
+data.train <- lapply(load.list.train, 
                      function(f) load.with.msg(raw.data.file, f))
 
 
 message("Loading test data (can take some time...)")
 # Load test data
-data.test <- lapply(zip.list.test, 
+data.test <- lapply(load.list.test, 
                      function(f) load.with.msg(raw.data.file, f))
 
 # Check if loaded trainign and test dataframes have same number of cols 
@@ -142,8 +134,9 @@ if (!assertion.datacols) {
 
 message("Mergin training and test datasets (assignment instruction 1)")
 # Merge training and test datasets
-data <- lapply(names.train, 
-               function (n) rbind(dmesata.train[[n]], data.test[[n]]))
+data <- sapply(names.train, 
+               FUN=function (n) rbind(data.train[[n]], data.test[[n]]),
+               USE.NAMES=TRUE)
 
 ############################################################
 # Assignment instruction 3                                 #
@@ -159,28 +152,44 @@ message(paste("Add activity labels and feature names to datasets",
 
 # Name columns in activity_labels
 names(activity_labels) <- c("activityCode", "activity")
+
 # Name columns in features
 names(features) <- c("vectorColumn", "feature")
+features$feature <- as.character(features$feature)
 # Make sure features is ordered by vectorColumn number
 features <- features[order(features[,"vectorColumn"]),]
 
+# There are duplicated names in the feature list.
+# The duplicated names will be made unique by adding suffixes
+message("Deduplicating feature names (keeping all data)")
+duplicated.feature.names <- unique(features$feature[duplicated(features$feature)])
+
+features.unique.names <- features$feature
+
+for (d in duplicated.feature.names) {
+    occurrences <- grep(d, features.unique.names, fixed=TRUE)
+    suffixes <- paste0("-DUP", as.character(1:length(occurrences)))
+    features.unique.names[occurrences] <- 
+	paste0(features.unique.names[occurrences], suffixes)
+}
+
+# Modify names in original feature data frame
+features$feature <- features.unique.names
+
 # Put feature names as column names for the 561-feature vectors dataset
-names(data[["X"]]) <- features[,"feature"]
+names(data[["X"]]) <- features$feature
 
 # Name columns in subject and activity list datasets
 names(data[["subject"]]) <- c("subject")
 names(data[["y"]]) <- c("activityCode")
 
-# Add new columns with subject and activity code data to 
+# Add new columns with subject and activity data to 
 # the 561-feature vectors dataset
-data[["X"]]$activityCode <- data[["y"]]$activityCode 
-data[["X"]]$subject <- factor(data[["subject"]]$subject)
 
-# Merge 
-data[["X"]] <- merge(data[["X"]], activity_labels, by="activityCode")
+info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels, by="activityCode")
 
-# Remove activityCode column from 561-feature vectors dataset
-data[["X"]]$activityCode <- NULL
+data[["X"]]$activity <- info$activity
+data[["X"]]$subject <- info$subject
 
 ############################################################
 # Assignment instruction 2                                 #
@@ -207,7 +216,9 @@ data.mean.sd <- data[["X"]][,names.mean.sd]
 # subject.                                                 #                                                             
 ############################################################
 
-message("TODO: Performing assignment instruction 5")
+message(paste("Creating tidy dataset with averages per subject/activity", 
+	      "(assignment instruction 5)"))
+ag <- aggregate(. ~ subject + activity, data=data[["X"]], FUN=mean)
 
 message("Finished processing. Bye!")
 
