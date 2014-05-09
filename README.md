@@ -13,17 +13,17 @@ Conditional download
 --------------------
 
 Checks if the zip file with the data exists in the working directory, otherwise 
-download from the provided URL and save it to `UCI_HAR_Dataset.zip`. Upon 
-download save a timestamp to "download_timestamp.txt".
+download from the provided URL and save it to *UCI_HAR_Dataset.zip*. Upon 
+download save a timestamp to *download_timestamp.txt*.
 
 Analize ZIP file
 ----------------
 
 Analize the ZIP file structure. The complete list of ZIP file contents is 
 retrieved and then files are classified, according to filename patterns, into
- metadata ("activity_labels.txt", "features.txt"), training data (files ending 
-in "_train.txt"), or test data (filenames ending in "_test.txt"). Non text, 
-zero size files, files in the folder "Inertial Signals", or files not 
+ metadata (*activity_labels.txt*, *features.txt*), training data (files ending 
+in '_train.txt'), or test data (filenames ending in '_test.txt'). Non text, 
+zero size files, files in the folder *Inertial Signals*, or files not 
 belonging to these three categories are ignored.
 
 In this step one list of files is created for each category, to be able to load 
@@ -87,7 +87,7 @@ Add descriptive names and label the data
 
 There are two main steps here. First adding the 561 column names to 
 the data[["X"]] data frame. The column names are loaded from 
-"feature_info.txt".There is an issue here, that the list of names appearing in 
+*feature_info.txt*.There is an issue here, that the list of names appearing in 
 the file has duplicates (see for example lines 390 and 404 of the text file), 
 and the corresponding columns in data[["X"]] contain different numbers. 
 My choice in this case was to rename the duplicated columns names using 
@@ -99,7 +99,7 @@ names(data[["X"]]) <- features$feature
 ```
 
 Second, merging the subject and activity data (loaded under the names `subject` 
-and `y`), and the activity labels (loaded as metadata from "activity_labels.txt"
+and `y`), and the activity labels (loaded as metadata from *activity_labels.txt*
  into the variable `activity_labels`). This is done with the command:
 
 ```
@@ -116,7 +116,7 @@ Extract the means and standard deviations
 -----------------------------------------
 
 A subset of column names is selected searching with the command `grep` for the
-strings "mean()" and "std()" in the names and keeping the names for activity and
+strings 'mean()' and 'std()' in the names and keeping the names for activity and
 subject. The variables of the type "meanFreq" are not selected, I choose to 
 ignore them, since they are not simple means of variables, but a weighted mean 
 of the frequencies.
@@ -136,6 +136,6 @@ averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]],
 ```
 
 This data frame will be saved as a text file with field separate by spaces,
-under the name "averages-tidy.txt". This is the only disk output of the script 
+under the name *averages-tidy.txt*. This is the only disk output of the script 
 (apart from the data download timestamp).
 
