@@ -19,8 +19,8 @@ download save a timestamp to "download_timestamp.txt".
 Analize ZIP file
 ----------------
 
-Analize the ZIP file structure. The complete list of ZIP file contents are 
-retrieved and then files are clasified, according to filename patterns, into
+Analize the ZIP file structure. The complete list of ZIP file contents is 
+retrieved and then files are classified, according to filename patterns, into
  metadata ("activity_labels.txt", "features.txt"), training data (files ending 
 in "_train.txt"), or test data (filenames ending in "_test.txt"). Non text, 
 zero size files, files in the folder "Inertial Signals", or files not 
@@ -80,18 +80,19 @@ list (which are identical to those in the test data loading list). This easy
 mergin is also possible beacuse the training and test data files have the same
 number of columns containing the same variables for each case. Now, the list
 `data` contains a series of data frames with the merged data, with a name for
-each fiel loaded.
+each file loaded.
 
-Add subject/activity data and label the data frames
----------------------------------------------------
+Add descriptive names and label the data
+----------------------------------------
 
-There are two steps here. First adding the 561 column names to the data[["X"]] 
-data frame. The column names are loaded from "feature_info.txt". There is an
-issue here, that the list of names appearing in the file has duplicates (see for
-example lines 190 and 404 of the text file), and the corresponding columns in
-data[["X"]] contain different numbers. My choice in this case was to rename
-the duplicated columns names using suffixes ("-DUP1", "-DUP2", etc.) and keep
-all the data. After renaming the duplicated the column labeling is done with:
+There are two main steps here. First adding the 561 column names to 
+the data[["X"]] data frame. The column names are loaded from 
+"feature_info.txt".There is an issue here, that the list of names appearing in 
+the file has duplicates (see for example lines 390 and 404 of the text file), 
+and the corresponding columns in data[["X"]] contain different numbers. 
+My choice in this case was to rename the duplicated columns names using 
+suffixes ("-DUP1", "-DUP2", etc.) and keep all the data. After renaming the 
+duplicated the column labeling is done with:
 
 ```
 names(data[["X"]]) <- features$feature
@@ -107,6 +108,7 @@ info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels,
 ```
 
 Now, we have a tidy dataset with labelled columns and activities.
+
 
 Extract the means and standard deviations
 -----------------------------------------
@@ -128,7 +130,7 @@ This is done applying the function `aggregate` to the original tidy data set
 
 ```
 averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]], 
-			       FUN=mean)
+                           FUN=mean)
 ```
 
 This data frame will be saved as a text file with field separate by spaces,
