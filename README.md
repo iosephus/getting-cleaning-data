@@ -14,7 +14,7 @@ Conditional download
 
 Checks if the zip file with the data exists in the working directory, otherwise 
 download from the provided URL and save it to `UCI_HAR_Dataset.zip`. Upon 
-download save a timestamp to `download_timestamp.txt`.
+download save a timestamp to "download_timestamp.txt".
 
 Analize ZIP file
 ----------------
