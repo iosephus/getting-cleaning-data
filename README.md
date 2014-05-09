@@ -31,10 +31,14 @@ the files to data frames at with a single line of code using an `lapply`
 command. The loading list would look like the following:
 
 ```
-load.list.train <-list(subject="UCI HAR Dataset/train/subject_train.txt", 
-                       X="UCI HAR Dataset/train/X_train.txt", 
-                       y="UCI HAR Dataset/train/y_train.txt"))
+load.list.train <- list(subject="UCI HAR Dataset/train/subject_train.txt", 
+                        X="UCI HAR Dataset/train/X_train.txt", 
+                        y="UCI HAR Dataset/train/y_train.txt"))
 ```
+
+Please, note that the literal on the right is included here for documentation 
+purposes only, in the real code, the list is built automatically and the code is
+different.
 
 Load the data
 -------------
