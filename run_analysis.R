@@ -35,6 +35,8 @@ raw.data.file <- "UCI_HAR_Dataset.zip"
 # Local file to store the download date and time
 timestamp.file <- "download_timestamp.txt"
 
+tidy.averages.file <- "averages-tidy.txt"
+
 ################################################################################
 ## Real work starts here!                                                     ##
 ##                                                                            ##
@@ -66,7 +68,14 @@ message(sprintf("Getting list of files in \"%s\"...", raw.data.file))
 zfiles <- unzip(raw.data.file, list=TRUE)
 zfilenames <- zfiles[grepl("[.]txt$", zfiles$Name) & zfiles$Length > 0, 
 		     c("Name")]
-message(sprintf("Found %d text files with size greater than zero:", 
+message(sprintf("Found %d text files with size greater than zero.", 
+                length(zfilenames)))
+# Let's remove info and Inertial-Signals from list, we won't use them
+relevant.file.selector <- !grepl("README[.]txt$", zfilenames) & 
+                          !grepl("features_info[.]txt$", zfilenames) &
+                          !grepl("[Ii]nertial [Ss]ignals", zfilenames)
+zfilenames <- zfilenames[relevant.file.selector]
+message(sprintf("Keeping only relevant files (%d):", 
                 length(zfilenames)))
 
 zfilename.activity_labels <- grep("activity_labels[.]txt$", zfilenames, 
@@ -222,7 +231,17 @@ data.mean.sd <- data[["X"]][,names.mean.sd]
 
 message(paste("Creating tidy dataset with averages per subject/activity", 
 	      "(assignment instruction 5)"))
-ag <- aggregate(. ~ subject + activity, data=data[["X"]], FUN=mean)
+averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]], 
+			       FUN=mean)
+
+# Order dataset for nicer output
+averages.tidy <- averages.tidy[order(averages.tidy$subject, 
+				     averages.tidy$activity),]
+
+message(sprintf(paste("Writing tidy dataset with averages per", 
+		      "subject/activity to \"%s\""), tidy.averages.file))
+# Write tidy dataset with averages to file
+write.table(averages.tidy, file=tidy.averages.file, row.names=FALSE)
 
 message("Finished processing. Bye!")
 
