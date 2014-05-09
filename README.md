@@ -107,7 +107,9 @@ info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels,
               by="activityCode")
 ```
 
-Now, we have a tidy dataset with labelled columns and activities.
+Finally, the two columns `subject` and `data` are added to the 561-columns data 
+frame in `data$X`. Now, we have a tidy dataset with labelled columns and 
+activities.
 
 
 Extract the means and standard deviations
