@@ -48,13 +48,18 @@ tidy.averages.file <- "averages-tidy.txt"
 
 # Check if data file exists in working directory, otherwise donwload it.
 if (!file.exists(raw.data.file)) {
+
     message(sprintf("Downloading compressed data to \"%s\"...", raw.data.file))
+
     # Create download timestamp
     download.timestamp <- format(Sys.time(), tz="UTC", usetz=TRUE)
+
     # Download file
     download.file(raw.data.url, destfile=raw.data.file, method="curl")
+
     message(sprintf("Saving download timestamp (%s) to \"%s\"", 
-                    download.timestamp, timestamp.file))
+		    download.timestamp, timestamp.file))
+
     # Save download timestamp
     cat(download.timestamp, file=timestamp.file)
 }
@@ -65,21 +70,27 @@ if (!file.exists(raw.data.file)) {
 
 # List zipfile contents
 message(sprintf("Getting list of files in \"%s\"...", raw.data.file))
+
 zfiles <- unzip(raw.data.file, list=TRUE)
+
 zfilenames <- zfiles[grepl("[.]txt$", zfiles$Name) & zfiles$Length > 0, 
 		     c("Name")]
+
 message(sprintf("Found %d text files with size greater than zero.", 
                 length(zfilenames)))
+
 # Let's remove info and Inertial-Signals from list, we won't use them
 relevant.file.selector <- !grepl("README[.]txt$", zfilenames) & 
                           !grepl("features_info[.]txt$", zfilenames) &
                           !grepl("[Ii]nertial [Ss]ignals", zfilenames)
-zfilenames <- zfilenames[relevant.file.selector]
+
+			  zfilenames <- zfilenames[relevant.file.selector]
 message(sprintf("Keeping only relevant files (%d):", 
                 length(zfilenames)))
 
 zfilename.activity_labels <- grep("activity_labels[.]txt$", zfilenames, 
 				  value=TRUE)[[1]]
+
 zfilename.features <- grep("features[.]txt$", zfilenames, value=TRUE)[[1]]
 
 message("    2 files with metadata.")
@@ -104,7 +115,6 @@ if (!assertion.datanames) {
 
 load.list.train <- as.list(zfilenames.train)
 names(load.list.train) <- names.train
-
 load.list.test <- as.list(zfilenames.test)
 names(load.list.test) <- names.test
 
@@ -130,9 +140,11 @@ data.test <- lapply(load.list.test,
 # Check if loaded trainign and test dataframes have same number of cols 
 assertion.datacols <- identical(lapply(data.train, FUN=ncol), 
                                 lapply(data.test, FUN=ncol))
+
 message(sprintf("Checking if training and test datasets %s: %s", 
                 "have same number of columns", 
                 assertion.datacols))
+
 if (!assertion.datacols) {
     stop("Training and test datasets must have same number of columns!")
 }
@@ -182,7 +194,7 @@ for (d in duplicated.feature.names) {
     occurrences <- grep(d, features.unique.names, fixed=TRUE)
     suffixes <- paste0("-DUP", as.character(1:length(occurrences)))
     features.unique.names[occurrences] <- 
-	paste0(features.unique.names[occurrences], suffixes)
+	                 paste0(features.unique.names[occurrences], suffixes)
 }
 
 # Modify names in original feature data frame
