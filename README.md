@@ -37,7 +37,7 @@ load.list.train <- list(subject="UCI HAR Dataset/train/subject_train.txt",
 ```
 
 Please, note that the literal on the right is included here for documentation 
-purposes only, in the real code, the list is built automatically and the code is
+purposes only. In the real code, the list is built automatically and the code is
 different.
 
 Load the data
