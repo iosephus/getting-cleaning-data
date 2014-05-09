@@ -4,7 +4,7 @@ getting-cleaning-data
 Course project for the Getting and Cleaning Data course, part of the Coursera 
 Data Science Specialization
 
-All the processing is done by the script `run_analysis.R`. Which prints messages
+All the processing is done by the script *run_analysis.R*. Which prints messages
 along the way describing the tasks it's performing.
 
 The script performs the following steps:
