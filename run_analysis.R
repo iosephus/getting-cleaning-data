@@ -81,8 +81,7 @@ message(sprintf("Found %d text files with size greater than zero.",
 
 # Let's remove info and Inertial-Signals from list, we won't use them
 relevant.file.selector <- !grepl("README[.]txt$", zfilenames) & 
-                          !grepl("features_info[.]txt$", zfilenames) &
-                          !grepl("[Ii]nertial [Ss]ignals", zfilenames)
+                          !grepl("features_info[.]txt$", zfilenames)
 
 			  zfilenames <- zfilenames[relevant.file.selector]
 message(sprintf("Keeping only relevant files (%d):", 
