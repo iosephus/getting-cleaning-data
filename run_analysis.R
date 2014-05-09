@@ -64,11 +64,13 @@ if (!file.exists(raw.data.file)) {
 # List zipfile contents
 message(sprintf("Getting list of files in \"%s\"...", raw.data.file))
 zfiles <- unzip(raw.data.file, list=TRUE)
-zfilenames <- zfiles[grepl("[.]txt$", zfiles$Name) & zfiles$Length > 0,c("Name")]
+zfilenames <- zfiles[grepl("[.]txt$", zfiles$Name) & zfiles$Length > 0, 
+		     c("Name")]
 message(sprintf("Found %d text files with size greater than zero:", 
                 length(zfilenames)))
 
-zfilename.activity_labels <- grep("activity_labels[.]txt$", zfilenames, value=TRUE)[[1]]
+zfilename.activity_labels <- grep("activity_labels[.]txt$", zfilenames, 
+				  value=TRUE)[[1]]
 zfilename.features <- grep("features[.]txt$", zfilenames, value=TRUE)[[1]]
 
 message("    2 files with metadata.")
@@ -85,7 +87,7 @@ names.test <- sub("_test[.]txt$", "", basename(zfilenames.test))
 assertion.datanames <- identical(sort(names.train), 
                                  sort(names.test))
 
-message(sprintf("Checking if same files exist for training and test data: %s", 
+message(sprintf("Checking if same files exist for training and test data: %s",
                 assertion.datanames))
 if (!assertion.datanames) {
     stop("Training and test data must have same file structure!")
@@ -162,7 +164,8 @@ features <- features[order(features[,"vectorColumn"]),]
 # There are duplicated names in the feature list.
 # The duplicated names will be made unique by adding suffixes
 message("Deduplicating feature names (keeping all data)")
-duplicated.feature.names <- unique(features$feature[duplicated(features$feature)])
+duplicated.feature.names <- 
+    unique(features$feature[duplicated(features$feature)])
 
 features.unique.names <- features$feature
 
@@ -186,7 +189,8 @@ names(data[["y"]]) <- c("activityCode")
 # Add new columns with subject and activity data to 
 # the 561-feature vectors dataset
 
-info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels, by="activityCode")
+info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels, 
+	      by="activityCode")
 
 data[["X"]]$activity <- info$activity
 data[["X"]]$subject <- info$subject
