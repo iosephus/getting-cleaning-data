@@ -104,7 +104,7 @@ and `y`), and the activity labels (loaded as metadata from "activity_labels.txt"
 
 ```
 info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels, 
-	      by="activityCode")
+              by="activityCode")
 ```
 
 Now, we have a tidy dataset with labelled columns and activities.
