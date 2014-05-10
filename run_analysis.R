@@ -240,18 +240,20 @@ info <- merge(data.frame(data[["y"]], data[["subject"]], idx=1:nrow(data[["y"]])
 info <- info[order(info$idx),]
 
 # Compute the times for the rolling time series for each subject and activity
-info$wtime <- rep(0.0, nrow(info))
+info$window <- rep(0, nrow(info))
 
 for (s in unique(info$subject)) {
     for (a in levels(info$activity)) {
 	selector <- info[,"subject"] == s & info[,"activity"] == a
-        info[selector,"wtime"] <- seq(1, nrow(info[selector,])) * twindow.sep
+        info[selector,"window"] <- 1:nrow(info[selector,])
     }
 }
 
+info$window <- factor(info$window)
+
 data[["X"]]$activity <- info$activity
 data[["X"]]$subject <- info$subject
-data[["X"]]$wtime <- info$wtime
+data[["X"]]$window <- info$window
 
 
 #p <- ggplot(d=data$X[data$X[,"subject"] %in% sample(1:30, 5),], aes(x=wtime, y=fBodyAccMag_mean, color=activity)) + geom_line() + facet_wrap(subject~activity, ncol=6) + theme(text = element_text(size=9), legend.position="none") + xlim(0, 65) + xlab("Window time (seconds)") 
@@ -267,14 +269,14 @@ data[["X"]]$wtime <- info$wtime
 make.inertial4tidy <- function (n) {
     message(sprintf("    %s", n))
     z <- data.frame(data[[n]], subject=info$subject, activity=info$activity, 
-    		wtime=info$wtime)
-    z <- melt(z, id=c("subject", "activity", "wtime"))
-    z <- z[order(z$subject, z$activity, z$wtime, z$variable),]
+    		window=as.integer(info$window))
+    z <- melt(z, id=c("subject", "activity", "window"))
+    z <- z[order(z$subject, z$activity, z$window, z$variable),]
     z$variable <- NULL
-    reduced.time <- rep((0:127)*sampling.interval, length.out=nrow(z))
-    z$time <- z$wtime + reduced.time - twindow.sep
-    z$wtime <- NULL
-    dup.samples <- duplicated(z[,c("subject", "activity", "time", "value")])
+    reduced.sample <- rep((0:127), length.out=nrow(z))
+    z$sample <- factor(z$window * 64 + reduced.sample)
+    z$window <- NULL
+    dup.samples <- duplicated(z[,c("subject", "activity", "sample", "value")])
     z <- z[!dup.samples,]
     value.name <- substr(n, nchar(n), nchar(n))
     names(z) <- sub("value", value.name, names(z))
@@ -306,17 +308,17 @@ if (!ignore.inertial) {
 				      value=TRUE)])
 
     message("Melting and relabelling total_acc for final merge")
-    total_acc <- melt(total_acc, id=c("subject", "activity", "time"))
+    total_acc <- melt(total_acc, id=c("subject", "activity", "sample"))
     names(total_acc) <- gsub("value", "total_acc", 
 			gsub("variable", "component", names(total_acc)))
 
     message("Melting and relabelling body_acc for final merge")
-    body_acc <- melt(body_acc, id=c("subject", "activity", "time"))
+    body_acc <- melt(body_acc, id=c("subject", "activity", "sample"))
     names(body_acc) <- gsub("value", "body_acc", 
 			gsub("variable", "component", names(body_acc)))
 
     message("Melting and relabelling body_gyro for final merge")
-    body_gyro <- melt(body_gyro, id=c("subject", "activity", "time"))
+    body_gyro <- melt(body_gyro, id=c("subject", "activity", "sample"))
     names(body_gyro) <- gsub("value", "body_gyro", 
 			gsub("variable", "component", names(body_gyro)))
 
@@ -341,7 +343,7 @@ message(paste("Creating tidy dataset containing only means and standard",
 
 # Select columns for mean/sd dataset by searching for the strings 
 # "mean()" and "std()" in the column names (features)
-names.mean.sd <- c("subject", "activity", "wtime",
+names.mean.sd <- c("subject", "activity", "window",
                    grep("std|mean", 
                         names(data[["X"]]), value=TRUE))
 
