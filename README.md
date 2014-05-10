@@ -121,7 +121,7 @@ info$window <- rep(0, nrow(info))
 
 for (s in unique(info$subject)) {
     for (a in levels(info$activity)) {
-	selector <- info[,"subject"] == s & info[,"activity"] == a
+        selector <- info[,"subject"] == s & info[,"activity"] == a
         info[selector,"window"] <- as.integer(1:nrow(info[selector,]))
     }
 }
