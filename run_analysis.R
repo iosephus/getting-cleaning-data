@@ -166,6 +166,10 @@ data <- sapply(names.train,
                FUN=function (n) rbind(data.train[[n]], data.test[[n]]),
                USE.NAMES=TRUE)
 
+# Remove non-merged data to save memory
+rm(data.train)
+rm(data.test)
+
 ############################################################
 # Assignment instruction 3                                 #
 # Use descriptive activity names to name the activities    #
