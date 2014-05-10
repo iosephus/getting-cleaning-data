@@ -1,6 +1,10 @@
 getting-cleaning-data
 =====================
 
+**WARNING: This is not the master branch of this repository. This branch was 
+only created for testing. Please, switch to the master branch to perform the 
+evaluation.**
+
 Course project for the Getting and Cleaning Data course, part of the Coursera 
 Data Science Specialization
 
