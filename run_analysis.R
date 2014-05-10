@@ -4,8 +4,6 @@
 ##                                                                            ##
 ################################################################################
 
-library("reshape2")
-
 ################################################################################
 ## Parameter definition section                                               ##
 ##                                                                            ##
@@ -21,16 +19,11 @@ raw.data.file <- "UCI_HAR_Dataset.zip"
 # Local file to store the download date and time
 timestamp.file <- "download_timestamp.txt"
 
-# Timing parameters
 # 2.56 seconds rolling windows with 50% overlap
-# Each window has 128 values sampled at 50Hz (sampling interval 0.02s)
-sampling.interval <- 1.0 / 50.0  # 0.02 seconds
-twindow.size <- 128 * sampling.interval  # 2.56 seconds
-twindow.sep <- 0.5 * twindow.size # 1.28 seconds
+window.size <- 2.56
+window.sep <- 0.5 * window.size # 1.28 seconds
 
 tidy.averages.file <- "averages-tidy.txt"
-
-ignore.inertial <- FALSE
 
 ################################################################################
 ## Function definition section                                                ##
@@ -93,10 +86,9 @@ message(sprintf("Found %d text files with size greater than zero.",
 relevant.file.selector <- !grepl("README[.]txt$", zfilenames) & 
                           !grepl("features_info[.]txt$", zfilenames)
 
-if (ignore.inertial) {
-    relevant.file.selector <- relevant.file.selector & 
+# Remove inertial signal files from list
+relevant.file.selector <- relevant.file.selector & 
                               !grepl("[Ii]nertial [Ss]ignals", zfilenames)
-}
 			  zfilenames <- zfilenames[relevant.file.selector]
 message(sprintf("Keeping only relevant files (%d):", 
                 length(zfilenames)))
@@ -253,88 +245,6 @@ data[["X"]]$activity <- info$activity
 data[["X"]]$subject <- info$subject
 data[["X"]]$window <- info$window
 
-
-#p <- ggplot(d=data$X[data$X[,"subject"] %in% sample(1:30, 5),], aes(x=wtime, y=fBodyAccMag_mean, color=activity)) + geom_line() + facet_wrap(subject~activity, ncol=6) + theme(text = element_text(size=9), legend.position="none") + xlim(0, 65) + xlab("Window time (seconds)") 
-#ggsave(file="tseries-acc.pdf", plot=p, units="in", width=11, height=8.5)
-
-
-############################################################
-# Creating tidy dataset for inertial signals               #
-# Extra work for fun                                       #
-############################################################
-
-
-make.inertial4tidy <- function (n) {
-    message(sprintf("    %s", n))
-    z <- data.frame(data[[n]], subject=info$subject, activity=info$activity, 
-    		window=info$window)
-    z <- melt(z, id=c("subject", "activity", "window"))
-    z <- z[order(z$subject, z$activity, z$window, z$variable),]
-    reduced.sample <- rep((1:128), length.out=nrow(z))
-    z$sample <- as.integer((z$window - 1) * 64 + reduced.sample)
-    z$variable <- NULL
-    z$window <- NULL
-    dup.samples <- duplicated(z[,c("subject", "activity", "sample", "value")])
-    z <- z[!dup.samples,]
-    value.name <- substr(n, nchar(n), nchar(n))
-    names(z) <- sub("value", value.name, names(z))
-    #z[order(z$subject, z$activity, z$time),]
-    z
-}
-
-if (!ignore.inertial) {
-    names.inertial <- grep("acc|gyro", names.train, value=TRUE)
-    names(names.inertial) <- names.inertial
-
-    message("Reorganizing and labelling data in inertial signal data sets")
-    inertial4tidy <- lapply(names.inertial, make.inertial4tidy)
-
-    message("Merging into categories (total_acc, body_acc, body_gyro)")
-    message("    total_acc")
-    total_acc <- Reduce(function(x,y) {merge(x,y)}, 
-		   inertial4tidy[grep("^total_acc_", names.inertial, 
-				      value=TRUE)])
-
-    message("    body_acc")
-    body_acc <- Reduce(function(x,y) {merge(x,y)}, 
-    		   inertial4tidy[grep("^body_acc_", names.inertial, 
-				      value=TRUE)])
-
-    message("    body_gyro")
-    body_gyro <- Reduce(function(x,y) {merge(x,y)}, 
-		   inertial4tidy[grep("^body_gyro_", names.inertial, 
-				      value=TRUE)])
-
-    message("Melting and relabelling total_acc for final merge")
-    total_acc <- melt(total_acc, id=c("subject", "activity", "sample"))
-    names(total_acc) <- gsub("value", "total_acc", 
-			gsub("variable", "component", names(total_acc)))
-    total_acc1 <- total_acc[order(total_acc$subject, 
-				 total_acc$activity,
-				 total_acc$sample,
-				 total_acc$component
-				 ),]
-
-    message("Melting and relabelling body_acc for final merge")
-    body_acc <- melt(body_acc, id=c("subject", "activity", "sample"))
-    names(body_acc) <- gsub("value", "body_acc", 
-			gsub("variable", "component", names(body_acc)))
-
-    message("Melting and relabelling body_gyro for final merge")
-    body_gyro <- melt(body_gyro, id=c("subject", "activity", "sample"))
-    names(body_gyro) <- gsub("value", "body_gyro", 
-			gsub("variable", "component", names(body_gyro)))
-
-    message(paste("Creating tidy data set with all inertial signals data", 
-		  "(this may take some time...)"))
-    message("Merging total_acc and body_acc first...")
-    temp <- merge(total_acc, body_acc)
-    message("Merging body_gyro to the result")
-    data.inertial.tidy <- merge(temp, body_gyro)
-    message("Done! (stored in variable \'data.inertial.tidy\')")
-
-}
-
 ############################################################
 # Assignment instruction 2                                 #
 # Extract only the measurements on the mean and standard   #
@@ -364,6 +274,8 @@ message(paste("Creating tidy dataset with averages per subject/activity",
 	      "(assignment instruction 5)"))
 averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]], 
 			       FUN=mean)
+
+averages.tidy$window <- NULL
 
 # Order dataset for nicer output
 averages.tidy <- averages.tidy[order(averages.tidy$subject, 
