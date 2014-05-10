@@ -263,7 +263,8 @@ data[["X"]]$window <- info$window
 # Extra work for fun                                       #
 ############################################################
 
-
+# TODO: Check why the result of this function for different inertial datasets
+# have different number of rows. Shouldn't they have equal number of rows?
 make.inertial4tidy <- function (n) {
     message(sprintf("    %s", n))
     z <- data.frame(data[[n]], subject=info$subject, activity=info$activity, 
@@ -278,7 +279,6 @@ make.inertial4tidy <- function (n) {
     z <- z[!dup.samples,]
     value.name <- substr(n, nchar(n), nchar(n))
     names(z) <- sub("value", value.name, names(z))
-    #z[order(z$subject, z$activity, z$time),]
     z
 }
 
