@@ -5,22 +5,6 @@
 ################################################################################
 
 ################################################################################
-## Function definition section                                                ##
-##                                                                            ##
-################################################################################
-
-# This function loads a file <f> from a zip archive <zipfile>
-# Prints a message with the indented filename <f>
-load.with.msg <- function (zipfile, f) {
-    message(sprintf("    \"%s\"", f))
-    df <- read.table(unz(zipfile, f))
-    #message(sprintf("Loaded %s rows with %d variables each", 
-    #               nrow(df), ncol(df)))
-    df
-}
-
-
-################################################################################
 ## Parameter definition section                                               ##
 ##                                                                            ##
 ################################################################################
@@ -35,7 +19,27 @@ raw.data.file <- "UCI_HAR_Dataset.zip"
 # Local file to store the download date and time
 timestamp.file <- "download_timestamp.txt"
 
+# Interval between adjacent time windows
+# 2.56 seconds rolling windows with 50% overlap
+twindow.size <- 2.56
+twindow.sep <- 0.5 * twindow.size
+
 tidy.averages.file <- "averages-tidy.txt"
+
+################################################################################
+## Function definition section                                                ##
+##                                                                            ##
+################################################################################
+
+# This function loads a file <f> from a zip archive <zipfile>
+# Prints a message with the indented filename <f>
+load.with.msg <- function (zipfile, f) {
+    message(sprintf("    \"%s\"", f))
+    df <- read.table(unz(zipfile, f))
+    #message(sprintf("Loaded %s rows with %d variables each", 
+    #               nrow(df), ncol(df)))
+    df
+}
 
 ################################################################################
 ## Real work starts here!                                                     ##
@@ -82,6 +86,10 @@ message(sprintf("Found %d text files with size greater than zero.",
 # Let's remove info and Inertial-Signals from list, we won't use them
 relevant.file.selector <- !grepl("README[.]txt$", zfilenames) & 
                           !grepl("features_info[.]txt$", zfilenames)
+
+# Comment/uncomment the following lone to activate inertial signal loading
+relevant.file.selector <- relevant.file.selector & 
+                          !grepl("[Ii]nertial [Ss]ignals", zfilenames)
 
 			  zfilenames <- zfilenames[relevant.file.selector]
 message(sprintf("Keeping only relevant files (%d):", 
@@ -177,6 +185,17 @@ names(activity_labels) <- c("activityCode", "activity")
 
 # Name columns in features
 names(features) <- c("vectorColumn", "feature")
+
+replace.list  <- list("-"= "_", "," = "_", "\\." = "_", "\\("= "", "\\)"= "")
+
+new.feature.names <- features$feature
+
+for (c in names(replace.list)) {
+   new.feature.names <- gsub(c, replace.list[[c]], new.feature.names)    
+}
+
+features$feature <- new.feature.names
+
 features$feature <- as.character(features$feature)
 # Make sure features is ordered by vectorColumn number
 features <- features[order(features[,"vectorColumn"]),]
@@ -212,8 +231,23 @@ names(data[["y"]]) <- c("activityCode")
 info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels, 
 	      by="activityCode")
 
+
+# Compute the times for the rolling time series for each subject and activity
+info$time <- rep(0.0, nrow(info))
+
+for (s in unique(info$subject)) {
+    for (a in unique(info$activity)) {
+	selector <- info[,"subject"] == s & info[,"activity"] == a
+        info[selector,"time"] <- seq(1, nrow(info[selector,])) * twindow.sep
+    }
+}
+
 data[["X"]]$activity <- info$activity
 data[["X"]]$subject <- info$subject
+data[["X"]]$time <- info$time
+
+
+#ggplot(d=subset(data$X, subject==1), aes(x=time, y="tBodyAccMag-mean()", color=activity)) + geom_line()
 
 ############################################################
 # Assignment instruction 2                                 #
@@ -226,8 +260,8 @@ message(paste("Creating tidy dataset containing only means and standard",
 
 # Select columns for mean/sd dataset by searching for the strings 
 # "mean()" and "std()" in the column names (features)
-names.mean.sd <- c("subject", "activity", 
-                   grep("std\\(\\)|mean\\(\\)", 
+names.mean.sd <- c("subject", "activity", "time",
+                   grep("std|mean", 
                         names(data[["X"]]), value=TRUE))
 
 # Create tidy mean/sd dataset

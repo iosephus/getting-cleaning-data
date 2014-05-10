@@ -85,11 +85,15 @@ each file loaded.
 Add descriptive names and label the data
 ----------------------------------------
 
-There are two main steps here. First adding the 561 column names to 
+There are three main steps here. First adding the 561 column names to 
 the data[["X"]] data frame. The column names are loaded from 
-*feature_info.txt*.There is an issue here, that the list of names appearing in 
-the file has duplicates (see for example lines 390 and 404 of the text file), 
-and the corresponding columns in data[["X"]] contain different numbers. 
+*feature_info.txt*, and cleaned by removing or replacing the characters that are
+not allowed in R data frame column names. Periods are also replaced by
+underscores for MongoDB compatibility.
+
+There is an issue here with the columns names, that the list of names appearing 
+in the file has duplicates (see for example lines 390, 404 and 418 of the text 
+file), and the corresponding columns in data[["X"]] contain different numbers. 
 My choice in this case was to rename the duplicated columns names using 
 suffixes ("-DUP1", "-DUP2", etc.) and keep all the data. After renaming the 
 duplicated the column labeling is done with:
@@ -107,10 +111,29 @@ info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels,
               by="activityCode")
 ```
 
-Finally, the two columns `subject` and `data` are added to the 561-columns data 
-frame in `data$X`. Now, we have a tidy dataset with labelled columns and 
-activities.
+Third, computing the time correspoding to each window. Each row we have for a
+subject/activity pair, corresponds to a position of the 2.56 seconds rolling
+window. The resulting windows are 2.56 seconds wide and have a 50% overlap,
+the separation between two neighboring windows is thus 1.28 seconds. I've taken 
+the time for each window at it's center, so the very first window has time 1.28,
+and the subsequent ones have times in increments of that same value. Different
+subject/activity pairs have different number of windows measured. The column
+with the times is computed by the following piece of code:
 
+```
+info$time <- rep(0.0, nrow(info))
+
+for (s in unique(info$subject)) {
+    for (a in unique(info$activity)) {
+	selector <- info[,"subject"] == s & info[,"activity"] == a
+        info[selector,"time"] <- seq(1, nrow(info[selector,])) * twindow.sep
+    }
+}
+```
+
+Finally, the three columns `subject`, `activity`, and `time`, are added to the 
+561-columns data frame in `data$X`. Now, we have a tidy dataset with labelled 
+columns and activities.
 
 Extract the means and standard deviations
 -----------------------------------------
