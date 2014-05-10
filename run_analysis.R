@@ -245,11 +245,9 @@ info$window <- rep(0, nrow(info))
 for (s in unique(info$subject)) {
     for (a in levels(info$activity)) {
 	selector <- info[,"subject"] == s & info[,"activity"] == a
-        info[selector,"window"] <- 1:nrow(info[selector,])
+        info[selector,"window"] <- as.integer(1:nrow(info[selector,]))
     }
 }
-
-info$window <- factor(info$window)
 
 data[["X"]]$activity <- info$activity
 data[["X"]]$subject <- info$subject
@@ -269,12 +267,12 @@ data[["X"]]$window <- info$window
 make.inertial4tidy <- function (n) {
     message(sprintf("    %s", n))
     z <- data.frame(data[[n]], subject=info$subject, activity=info$activity, 
-    		window=as.integer(info$window))
+    		window=info$window)
     z <- melt(z, id=c("subject", "activity", "window"))
     z <- z[order(z$subject, z$activity, z$window, z$variable),]
+    reduced.sample <- rep((1:128), length.out=nrow(z))
+    z$sample <- as.integer((z$window - 1) * 64 + reduced.sample)
     z$variable <- NULL
-    reduced.sample <- rep((0:127), length.out=nrow(z))
-    z$sample <- factor(z$window * 64 + reduced.sample)
     z$window <- NULL
     dup.samples <- duplicated(z[,c("subject", "activity", "sample", "value")])
     z <- z[!dup.samples,]
@@ -311,6 +309,11 @@ if (!ignore.inertial) {
     total_acc <- melt(total_acc, id=c("subject", "activity", "sample"))
     names(total_acc) <- gsub("value", "total_acc", 
 			gsub("variable", "component", names(total_acc)))
+    total_acc1 <- total_acc[order(total_acc$subject, 
+				 total_acc$activity,
+				 total_acc$sample,
+				 total_acc$component
+				 ),]
 
     message("Melting and relabelling body_acc for final merge")
     body_acc <- melt(body_acc, id=c("subject", "activity", "sample"))
