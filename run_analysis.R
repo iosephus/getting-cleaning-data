@@ -289,7 +289,12 @@ if (!ignore.inertial) {
     message("Reorganizing and labelling data in inertial signal data sets")
     inertial4tidy <- lapply(names.inertial, make.inertial4tidy)
 
-    message("Merging into categories (body_acc, body_gyro, total_acc)")
+    message("Merging into categories (total_acc, body_acc, body_gyro)")
+    message("    total_acc")
+    total_acc <- Reduce(function(x,y) {merge(x,y)}, 
+		   inertial4tidy[grep("^total_acc_", names.inertial, 
+				      value=TRUE)])
+
     message("    body_acc")
     body_acc <- Reduce(function(x,y) {merge(x,y)}, 
     		   inertial4tidy[grep("^body_acc_", names.inertial, 
@@ -300,10 +305,10 @@ if (!ignore.inertial) {
 		   inertial4tidy[grep("^body_gyro_", names.inertial, 
 				      value=TRUE)])
 
-    message("    total_acc")
-    total_acc <- Reduce(function(x,y) {merge(x,y)}, 
-		   inertial4tidy[grep("^total_acc_", names.inertial, 
-				      value=TRUE)])
+    message("Melting and relabelling total_acc for final merge")
+    total_acc <- melt(total_acc, id=c("subject", "activity", "time"))
+    names(total_acc) <- gsub("value", "total_acc", 
+			gsub("variable", "component", names(total_acc)))
 
     message("Melting and relabelling body_acc for final merge")
     body_acc <- melt(body_acc, id=c("subject", "activity", "time"))
@@ -315,18 +320,12 @@ if (!ignore.inertial) {
     names(body_gyro) <- gsub("value", "body_gyro", 
 			gsub("variable", "component", names(body_gyro)))
 
-    message("Melting and relabelling total_acc for final merge")
-    total_acc <- melt(total_acc, id=c("subject", "activity", "time"))
-    names(total_acc) <- gsub("value", "total_acc", 
-			gsub("variable", "component", names(total_acc)))
-
-
     message(paste("Creating tidy data set with all inertial signals data", 
 		  "(this may take some time...)"))
-    message("Merging body_acc and body_gyro first...")
-    temp <- merge(body_acc, body_gyro)
-    message("Merging total acc to the result")
-    data.inertial.tidy <- merge(temp, total_acc)
+    message("Merging total_acc and body_acc first...")
+    temp <- merge(total_acc, body_acc)
+    message("Merging body_gyro to the result")
+    data.inertial.tidy <- merge(temp, body_gyro)
     message("Done! (stored in variable \'data.inertial.tidy\')")
 
 }
