@@ -1,8 +1,12 @@
 getting-cleaning-data
 =====================
 
+*Important note: Only master branch should be used for evaluation. Please,
+ignore other branches, they only exist for the purpose of testing other
+approaches.*
+
 Course project for the Getting and Cleaning Data course, part of the Coursera 
-Data Science Specialization
+Data Science Specialization.
 
 All the processing is done by the script *run_analysis.R*. Which prints messages
 along the way describing the tasks it's performing.
