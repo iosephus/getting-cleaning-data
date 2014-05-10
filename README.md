@@ -125,6 +125,7 @@ for (s in unique(info$subject)) {
         info[selector,"window"] <- as.integer(1:nrow(info[selector,]))
     }
 }
+```
 
 The windows are 2.56 seconds wide and have a 50% overlap, the separation 
 between two neighboring windows is thus 1.28 seconds. To compute the time
