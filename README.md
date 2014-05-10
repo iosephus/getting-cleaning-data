@@ -159,6 +159,8 @@ averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]],
 ```
 
 This data frame will be saved as a text file with field separate by spaces,
-under the name *averages-tidy.txt*. This is the only disk output of the script 
-(apart from the data download timestamp).
+under the name *averages-tidy.txt*. Given how the `time` column was 
+constructed, it's average is half the total time during which data was collected
+for that subject and activity. The file *averages-tidy.txt* is the only disk 
+output of the script (apart from the data download timestamp).
 
