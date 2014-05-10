@@ -305,25 +305,29 @@ if (!ignore.inertial) {
 		   inertial4tidy[grep("^total_acc_", names.inertial, 
 				      value=TRUE)])
 
-    message("Melting and relabelling body_acc for final merge)")
+    message("Melting and relabelling body_acc for final merge")
     body_acc <- melt(body_acc, id=c("subject", "activity", "time"))
     names(body_acc) <- gsub("value", "body_acc", 
 			gsub("variable", "component", names(body_acc)))
 
-    message("Melting and relabelling body_gyro for final merge)")
+    message("Melting and relabelling body_gyro for final merge")
     body_gyro <- melt(body_gyro, id=c("subject", "activity", "time"))
     names(body_gyro) <- gsub("value", "body_gyro", 
 			gsub("variable", "component", names(body_gyro)))
 
-    message("Melting and relabelling total_acc for final merge)")
+    message("Melting and relabelling total_acc for final merge")
     total_acc <- melt(total_acc, id=c("subject", "activity", "time"))
     names(total_acc) <- gsub("value", "total_acc", 
 			gsub("variable", "component", names(total_acc)))
 
 
-    message("Making super data set with all inertial signals tidy data")
+    message(paste("Creating tidy data set with all inertial signals data", 
+		  "(this may take some time...)"))
+    message("Merging body_acc and body_gyro first...")
     temp <- merge(body_acc, body_gyro)
+    message("Merging total acc to the result")
     data.inertial.tidy <- merge(temp, total_acc)
+    message("Done! (stored in variable \'data.inertial.tidy\')")
 
 }
 
