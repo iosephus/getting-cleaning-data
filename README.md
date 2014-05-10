@@ -1,10 +1,6 @@
 getting-cleaning-data
 =====================
 
-**Important note: Only the master branch should be used for evaluation. Please,
-ignore other branches, they only exist for the purpose of testing other
-approaches.**
-
 Course project for the Getting and Cleaning Data course, part of the Coursera 
 Data Science Specialization.
 
