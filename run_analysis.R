@@ -174,6 +174,10 @@ data <- sapply(names.train,
                FUN=function (n) rbind(data.train[[n]], data.test[[n]]),
                USE.NAMES=TRUE)
 
+# Remove loaded non merged data to save memory
+rm(data.train)
+rm(data.test)
+
 ############################################################
 # Assignment instruction 3                                 #
 # Use descriptive activity names to name the activities    #
@@ -263,6 +267,8 @@ data[["X"]]$window <- info$window
 # Extra work for fun                                       #
 ############################################################
 
+stop()
+
 # TODO: Check why the result of this function for different inertial datasets
 # have different number of rows. Shouldn't they have equal number of rows?
 make.inertial4tidy <- function (n) {
@@ -275,7 +281,7 @@ make.inertial4tidy <- function (n) {
     z$sample <- as.integer((z$window - 1) * 64 + reduced.sample)
     z$variable <- NULL
     z$window <- NULL
-    dup.samples <- duplicated(z[,c("subject", "activity", "sample", "value")])
+    dup.samples <- duplicated(z[,c("subject", "activity", "sample")])
     z <- z[!dup.samples,]
     value.name <- substr(n, nchar(n), nchar(n))
     names(z) <- sub("value", value.name, names(z))
@@ -309,7 +315,7 @@ if (!ignore.inertial) {
     total_acc <- melt(total_acc, id=c("subject", "activity", "sample"))
     names(total_acc) <- gsub("value", "total_acc", 
 			gsub("variable", "component", names(total_acc)))
-    total_acc1 <- total_acc[order(total_acc$subject, 
+    total_acc <- total_acc[order(total_acc$subject, 
 				 total_acc$activity,
 				 total_acc$sample,
 				 total_acc$component
@@ -331,6 +337,15 @@ if (!ignore.inertial) {
     temp <- merge(total_acc, body_acc)
     message("Merging body_gyro to the result")
     data.inertial.tidy <- merge(temp, body_gyro)
+    rm(temp)
+    rm(total_acc)
+    rm(body_acc)
+    rm(body_gyro)
+    data.inertial.tidy <- data.inertial.tidy[order(data.inertial.tidy$subject,
+                                                   data.inertial.tidy$activity,
+                                                   data.inertial.tidy$sample,
+                                                   data.inertial.tidy$component
+						   ),]
     message("Done! (stored in variable \'data.inertial.tidy\')")
 
 }
