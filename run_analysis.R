@@ -267,10 +267,6 @@ data[["X"]]$window <- info$window
 # Extra work for fun                                       #
 ############################################################
 
-stop()
-
-# TODO: Check why the result of this function for different inertial datasets
-# have different number of rows. Shouldn't they have equal number of rows?
 make.inertial4tidy <- function (n) {
     message(sprintf("    %s", n))
     z <- data.frame(data[[n]], subject=info$subject, activity=info$activity, 
@@ -337,10 +333,15 @@ if (!ignore.inertial) {
     temp <- merge(total_acc, body_acc)
     message("Merging body_gyro to the result")
     data.inertial.tidy <- merge(temp, body_gyro)
+
+    # Free some memeory by removing intermediate data
     rm(temp)
     rm(total_acc)
     rm(body_acc)
     rm(body_gyro)
+    rm(inertial4tidy)
+
+    # Order the data set
     data.inertial.tidy <- data.inertial.tidy[order(data.inertial.tidy$subject,
                                                    data.inertial.tidy$activity,
                                                    data.inertial.tidy$sample,
