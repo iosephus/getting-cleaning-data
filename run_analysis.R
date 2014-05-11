@@ -307,6 +307,9 @@ if (!ignore.inertial) {
 		   inertial4tidy[grep("^body_gyro_", names.inertial, 
 				      value=TRUE)])
 
+    # Free some memeory by removing intermediate data
+    rm(inertial4tidy)
+
     message("Melting and relabelling total_acc for final merge")
     total_acc <- melt(total_acc, id=c("subject", "activity", "sample"))
     names(total_acc) <- gsub("value", "total_acc", 
@@ -331,15 +334,17 @@ if (!ignore.inertial) {
 		  "(this may take some time...)"))
     message("Merging total_acc and body_acc first...")
     temp <- merge(total_acc, body_acc)
+
+    # Free some memeory by removing intermediate data
+    rm(total_acc)
+    rm(body_acc)
+
     message("Merging body_gyro to the result")
     data.inertial.tidy <- merge(temp, body_gyro)
 
     # Free some memeory by removing intermediate data
     rm(temp)
-    rm(total_acc)
-    rm(body_acc)
     rm(body_gyro)
-    rm(inertial4tidy)
 
     # Order the data set
     data.inertial.tidy <- data.inertial.tidy[order(data.inertial.tidy$subject,
