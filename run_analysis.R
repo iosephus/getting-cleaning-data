@@ -25,6 +25,11 @@ window.sep <- 0.5 * window.size # 1.28 seconds
 
 tidy.averages.file <- "averages-tidy.txt"
 
+# Max number of lines to print for data frames str ouput
+num.lines.info <- 12
+
+ignore.inertial <- FALSE
+
 ################################################################################
 ## Function definition section                                                ##
 ##                                                                            ##
@@ -72,7 +77,7 @@ if (!file.exists(raw.data.file)) {
 ############################################################
 
 # List zipfile contents
-message(sprintf("Getting list of files in \"%s\"...", raw.data.file))
+message(sprintf("\nGetting list of files in \"%s\"...", raw.data.file))
 
 zfiles <- unzip(raw.data.file, list=TRUE)
 
@@ -127,7 +132,7 @@ names(load.list.test) <- names.test
 # Loading data from zip file                               # 
 ############################################################
 
-message("Loading metadata...")
+message("\nLoading metadata...")
 activity_labels <- load.with.msg(raw.data.file, zfilename.activity_labels)
 features <- load.with.msg(raw.data.file, zfilename.features)
 
@@ -146,12 +151,12 @@ data.test <- lapply(load.list.test,
 assertion.datacols <- identical(lapply(data.train, FUN=ncol), 
                                 lapply(data.test, FUN=ncol))
 
-message(sprintf("Checking if training and test datasets %s: %s", 
+message(sprintf("Checking if training and test data sets %s: %s", 
                 "have same number of columns", 
                 assertion.datacols))
 
 if (!assertion.datacols) {
-    stop("Training and test datasets must have same number of columns!")
+    stop("Training and test data sets must have same number of columns!")
 }
 
 ############################################################
@@ -160,13 +165,41 @@ if (!assertion.datacols) {
 # data set.                                                #
 ############################################################
 
-message("Mergin training and test datasets (assignment instruction 1)")
-# Merge training and test datasets
+# Lets add columns to each data set to differentiate training and test data in
+# the merged data set.
+# Let's also add a column with an incremental index to be able to keep track
+# of the order of the data (which is important because the data corresponds to
+# ordered temporal windows).
+# Data in test data set will have index shifted by the number of rows in the
+# training data set so that we have a single index for ordering the marged 
+# data set.
+
+# This function will add index (with optional shift) and data set identifier.
+add.index.and.setid <- function (d, setid, shift=0) {
+
+    d$idx <- 1:nrow(d) + shift
+    d$set <- factor(rep(setid, nrow(d)))
+    d
+}
+
+message("Adding index and set identifier (Training/Test) before merging")
+# Add index and data set identifier to training data
+data.train <- lapply(data.train, 
+		     function (d) add.index.and.setid(d, "Training"))
+
+# Add index and data set identifier to test data.
+# Add index shifted by the number of rows in training data set
+data.test <- lapply(data.test, 
+		     function (d) add.index.and.setid(d, "Test",
+						      shift=nrow(data.train$X)))
+
+message("\nMerging training and test data sets (ASSIGNMENT INSTRUCTION 1)")
+# Merge training and test data sets
 data <- sapply(names.train, 
                FUN=function (n) rbind(data.train[[n]], data.test[[n]]),
                USE.NAMES=TRUE)
 
-# Remove non-merged data to save memory
+# Remove loaded non merged data to save memory
 rm(data.train)
 rm(data.test)
 
@@ -179,8 +212,8 @@ rm(data.test)
 # activity names.                                          #
 ############################################################
 
-message(paste("Add activity labels and feature names to datasets",
-              "(assignment instruction 3-4)"))
+message(paste("\nAdd activity labels and feature names to data sets",
+              "(ASSIGNMENT INSTRUCTION 3-4)"))
 
 # Name columns in activity_labels
 names(activity_labels) <- c("activityCode", "activity")
@@ -220,34 +253,161 @@ for (d in duplicated.feature.names) {
 # Modify names in original feature data frame
 features$feature <- features.unique.names
 
-# Put feature names as column names for the 561-feature vectors dataset
-names(data[["X"]]) <- features$feature
+# Put feature names as column names for the 561-feature vectors data set
+old.names <- paste0("V", 1:(ncol(data$X) - 2))
+names(data$X)[match(old.names, names(data$X))] <- features$feature
 
-# Name columns in subject and activity list datasets
-names(data[["subject"]]) <- c("subject")
-names(data[["y"]]) <- c("activityCode")
+# Name columns in subject and activity list data sets
+names(data$subject)[match("V1", names(data$subject))] <- c("subject")
+names(data$y)[match("V1", names(data$y))] <- c("activityCode")
 
 # Add new columns with subject and activity data to 
-# the 561-feature vectors dataset
+# the 561-feature vectors data set
 
-info <- merge(data.frame(data[["y"]], data[["subject"]], idx=1:nrow(data[["y"]]))
-	      , activity_labels, by="activityCode")
+info <- merge(merge(data$y, data$subject, by="idx"), activity_labels, 
+	      by="activityCode")
+
+info$activityCode <- NULL
 
 info <- info[order(info$idx),]
 
-# Compute the times for the rolling time series for each subject and activity
+# Compute the window number for the rolling time series for each subject and 
+# activity
+# Create also a window count data set that will be used later
 info$window <- rep(0, nrow(info))
+count <- expand.grid(subject=unique(info$subject), 
+		     activity=levels(info$activity))
+count$windowcount <- as.integer(rep(0, nrow(count)))
 
 for (s in unique(info$subject)) {
     for (a in levels(info$activity)) {
 	selector <- info[,"subject"] == s & info[,"activity"] == a
         info[selector,"window"] <- as.integer(1:nrow(info[selector,]))
+	count[count$subject == s & count$activity == a, "windowcount"] <- 
+	    nrow(info[selector,])
+	    
     }
 }
 
-data[["X"]]$activity <- info$activity
-data[["X"]]$subject <- info$subject
-data[["X"]]$window <- info$window
+data$X$activity <- info$activity
+data$X$subject <- info$subject
+data$X$window <- info$window
+
+# Once we added the subject, activity, set and window number info, we can
+# remove the index, we don't need it anymore
+data$X$idx <- NULL
+
+# Order data$X columns
+new.order <- c("subject", "activity", "set", "window", names(data$X))
+new.order <- new.order[!duplicated(new.order)]
+
+data$X <- data$X[,new.order]
+
+#p <- ggplot(d=data$X[data$X[,"subject"] %in% sample(1:30, 5),], aes(x=wtime, y=fBodyAccMag_mean, color=activity)) + geom_line() + facet_wrap(subject~activity, ncol=6) + theme(text = element_text(size=9), legend.position="none") + xlim(0, 65) + xlab("Window time (seconds)") 
+#ggsave(file="tseries-acc.pdf", plot=p, units="in", width=11, height=8.5)
+
+message("\nWe have a tidy data set for the variables (non-inertial) data")
+str(data$X, list.len=num.lines.info)
+
+
+############################################################
+# Creating tidy data set for inertial signals               #
+# Extra work for fun                                       #
+############################################################
+
+# This function will add subject, activity, data set and window number data
+# to an inertial signals data set.
+# Then will melt it and remove duplicate samples (rolling windows has 50%
+# overlap)
+make.inertial4tidy <- function (n) {
+    message(sprintf("    %s", n))
+    z <- merge(data[[n]], info, by="idx")
+    z <- z[order(z$idx),]
+    z <- melt(z, id=c("subject", "activity", "window"))
+    reduced.sample <- rep((1:128), length.out=nrow(z))
+    z$sample <- as.integer((z$window - 1) * 64 + reduced.sample)
+    z$idx <- NULL
+    z$variable <- NULL
+    z$window <- NULL
+    dup.samples <- duplicated(z[,c("subject", "activity", "sample")])
+    z <- z[!dup.samples,]
+    names(z)[match("value", names(z))] <- substr(n, nchar(n), nchar(n))
+    z
+}
+
+if (!ignore.inertial) {
+    message("\nProcessing inertial signals data")
+    names.inertial <- grep("acc|gyro", names.train, value=TRUE)
+    names(names.inertial) <- names.inertial
+
+    message("Reorganizing and labelling data in inertial signal data sets")
+    inertial4tidy <- lapply(names.inertial, make.inertial4tidy)
+
+    message("Merging into categories (total_acc, body_acc, body_gyro)")
+    message("    total_acc")
+    total_acc <- Reduce(function(x,y) {merge(x,y)}, 
+		   inertial4tidy[grep("^total_acc_", names.inertial, 
+				      value=TRUE)])
+
+    message("    body_acc")
+    body_acc <- Reduce(function(x,y) {merge(x,y)}, 
+    		   inertial4tidy[grep("^body_acc_", names.inertial, 
+				      value=TRUE)])
+
+    message("    body_gyro")
+    body_gyro <- Reduce(function(x,y) {merge(x,y)}, 
+		   inertial4tidy[grep("^body_gyro_", names.inertial, 
+				      value=TRUE)])
+
+    # Free some memeory by removing intermediate data
+    rm(inertial4tidy)
+
+    message("Melting and relabelling total_acc for final merge")
+    total_acc <- melt(total_acc, id=c("subject", "activity", "sample"))
+    names(total_acc)[match(c("variable", "value"), names(total_acc))] <- 
+	                                           c("component", "total_acc")
+    total_acc <- total_acc[order(total_acc$subject, 
+				 total_acc$activity,
+				 total_acc$sample,
+				 total_acc$component
+				 ),]
+
+    message("Melting and relabelling body_acc for final merge")
+    body_acc <- melt(body_acc, id=c("subject", "activity", "sample"))
+    names(body_acc)[match(c("variable", "value"), names(body_acc))] <- 
+	                                           c("component", "body_acc")
+
+    message("Melting and relabelling body_gyro for final merge")
+    body_gyro <- melt(body_gyro, id=c("subject", "activity", "sample"))
+    names(body_gyro)[match(c("variable", "value"), names(body_gyro))] <- 
+	                                           c("component", "body_gyro")
+
+    message(paste("\nCreating tidy data set with all inertial signals data", 
+		  "(this may take some time...)"))
+    message("Merging total_acc and body_acc first...")
+    temp <- merge(total_acc, body_acc)
+
+    # Free some memeory by removing intermediate data
+    rm(total_acc)
+    rm(body_acc)
+
+    message("Merging body_gyro to the result")
+    data.inertial.tidy <- merge(temp, body_gyro)
+
+    # Free some memeory by removing intermediate data
+    rm(temp)
+    rm(body_gyro)
+
+    # Order the data set
+    data.inertial.tidy <- data.inertial.tidy[order(data.inertial.tidy$subject,
+                                                   data.inertial.tidy$activity,
+                                                   data.inertial.tidy$sample,
+                                                   data.inertial.tidy$component
+						   ),]
+    message("Done! (stored in variable \'data.inertial.tidy\')")
+    str(data.inertial.tidy, list.len=10)
+
+}
 
 ############################################################
 # Assignment instruction 2                                 #
@@ -255,17 +415,18 @@ data[["X"]]$window <- info$window
 # deviation for each measurement.                          #                                     
 ############################################################
 
-message(paste("Creating tidy dataset containing only means and standard",
-              "deviations (assignment instruction 2)"))
+message(paste("\nCreating tidy data set containing only means and standard",
+              "deviations (ASSIGNMENT INSTRUCTION 2)"))
 
-# Select columns for mean/sd dataset by searching for the strings 
+# Select columns for mean/sd data set by searching for the strings 
 # "mean()" and "std()" in the column names (features)
 names.mean.sd <- c("subject", "activity", "window",
                    grep("std|mean", 
-                        names(data[["X"]]), value=TRUE))
+                        names(data$X), value=TRUE))
 
-# Create tidy mean/sd dataset
-data.mean.sd <- data[["X"]][,names.mean.sd]
+# Create tidy mean/sd data set
+data.mean.sd <- data$X[,names.mean.sd]
+str(data.mean.sd, list.len=num.lines.info)
 
 ############################################################
 # Assignment instruction 5                                 #
@@ -274,20 +435,32 @@ data.mean.sd <- data[["X"]][,names.mean.sd]
 # subject.                                                 #                       
 ############################################################
 
-message(paste("Creating tidy dataset with averages per subject/activity", 
-	      "(assignment instruction 5)"))
-averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]], 
+message(paste("\nCreating tidy data set with averages per subject/activity", 
+	      "(ASSIGNMENT INSTRUCTION 5)"))
+averages.tidy <- aggregate(. ~ subject + activity, data=data$X, 
 			       FUN=mean)
 
 averages.tidy$window <- NULL
+averages.tidy$set <- NULL
 
-# Order dataset for nicer output
+averages.tidy <- merge(averages.tidy, count, by=c("subject", "activity"))
+
+# Let's order columns more conveniently
+new.order <- c("subject", "activity", "windowcount", names(averages.tidy))
+new.order <- new.order[!duplicated(new.order)]
+
+averages.tidy <- averages.tidy[, new.order]
+
+# Order data set rows for nicer output
 averages.tidy <- averages.tidy[order(averages.tidy$subject, 
 				     averages.tidy$activity),]
 
-message(sprintf(paste("Writing tidy dataset with averages per", 
+
+str(averages.tidy, list.len=num.lines.info)
+
+message(sprintf(paste("\nWriting tidy data set with averages per", 
 		      "subject/activity to \"%s\""), tidy.averages.file))
-# Write tidy dataset with averages to file
+# Write tidy data set with averages to file
 write.table(averages.tidy, file=tidy.averages.file, row.names=FALSE)
 
 message("Finished processing. Bye!")
