@@ -140,8 +140,8 @@ Finally, the three columns `subject`, `activity`, and `time`, are added to the
 561-columns data frame in `data$X`. Now, we have a tidy dataset with labelled 
 columns and activities.
 
-Inertial signals data
-~~~~~~~~~~~~~~~~~~~~~
+###Inertial signals data
+
 
 The data corresponding to the inertial signals is also loaded and a tidy,
 conveniently labelled data set is created for it. Since this data has a
@@ -312,3 +312,4 @@ Creating tidy data set with averages per subject/activity (ASSIGNMENT INSTRUCTIO
 Writing tidy data set with averages per subject/activity to "averages-tidy.txt"
 Finished processing. Bye!
 ```
+
