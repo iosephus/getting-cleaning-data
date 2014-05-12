@@ -116,25 +116,26 @@ info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels,
               by="activityCode")
 ```
 
-Third, computing the time correspoding to each window. Each row we have for a
-subject/activity pair, corresponds to a position of the 2.56 seconds rolling
-window. The resulting windows are 2.56 seconds wide and have a 50% overlap,
-the separation between two neighboring windows is thus 1.28 seconds. I've taken 
-the time for each window at it's center, so the very first window has time 1.28,
-and the subsequent ones have times in increments of that same value. Different
-subject/activity pairs have different number of windows measured. The column
-with the times is computed by the following piece of code:
+Third, add window numbers to data. Each row we have for a subject/activity 
+pair, corresponds to a position of the 2.56 seconds rolling window. Different 
+subject/activity pairs have different number of windows measured. The column 
+with the window number is computed by the following piece of code:
 
 ```
-info$time <- rep(0.0, nrow(info))
+info$window <- rep(0, nrow(info))
 
 for (s in unique(info$subject)) {
-    for (a in unique(info$activity)) {
-	selector <- info[,"subject"] == s & info[,"activity"] == a
-        info[selector,"time"] <- seq(1, nrow(info[selector,])) * twindow.sep
+    for (a in levels(info$activity)) {
+        selector <- info[,"subject"] == s & info[,"activity"] == a
+        info[selector,"window"] <- as.integer(1:nrow(info[selector,]))
     }
 }
 ```
+
+The windows are 2.56 seconds wide and have a 50% overlap, the separation 
+between two neighboring windows is thus 1.28 seconds. To compute the time in 
+seconds corresponding to the center of each window, we just need to multiply 
+the window number in the data set by 1.28 (see variable window.sep).
 
 Finally, the three columns `subject`, `activity`, and `time`, are added to the 
 561-columns data frame in `data$X`. Now, we have a tidy dataset with labelled 
@@ -173,9 +174,9 @@ averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]],
 ```
 
 This data frame will be saved as a text file with field separate by spaces,
-under the name *averages-tidy.txt*. Given how the `time` column was 
-constructed, it's average is half the total time during which data was collected
-for that subject and activity. The file *averages-tidy.txt* is the only disk 
+under the name *averages-tidy.txt*. The *windows* column is replaced in this data
+set with a *windowcount* column that contains the number of windows for the
+subject/activity combination.  The file *averages-tidy.txt* is the only disk 
 output of the script (apart from the data download timestamp).
 
 Example screen output
