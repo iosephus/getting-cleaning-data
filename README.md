@@ -112,8 +112,8 @@ and `y`), and the activity labels (loaded as metadata from *activity_labels.txt*
  into the variable `activity_labels`). This is done with the command:
 
 ```
-info <- merge(data.frame(data[["y"]], data[["subject"]]), activity_labels, 
-              by="activityCode")
+info <- merge(merge(data$y, data$subject, by="idx"), activity_labels, 
+	      by="activityCode")
 ```
 
 Third, add window numbers to data. Each row we have for a subject/activity 
