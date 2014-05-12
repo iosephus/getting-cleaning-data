@@ -178,8 +178,8 @@ constructed, it's average is half the total time during which data was collected
 for that subject and activity. The file *averages-tidy.txt* is the only disk 
 output of the script (apart from the data download timestamp).
 
-Example output
---------------
+Example screen output
+---------------------
 
 An example full output for a run of the script is shown below for reference.
 Note the negative values for some standard deviations. Standard deviation 
