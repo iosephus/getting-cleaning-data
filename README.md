@@ -181,6 +181,11 @@ output of the script (apart from the data download timestamp).
 Example output
 --------------
 
+An example full output for a run of the script is shown below for reference.
+Note the negative values for some standard deviations. Standard deviation 
+should be positive. This has been verified to be a problem in the provided data 
+by visually examining the text files provided. It's not a problem in the code.
+
 ```
 iosephus@whitehorse:~/src/getting-cleaning-data$ Rscript run_analysis.R
 
