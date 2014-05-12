@@ -42,7 +42,7 @@ different.
 Load the data
 -------------
 
-Load the data in a single line of code for each load list using lapply on the
+Load the data in a single line of code for each load list using `lapply` on the
 load list and specifying the loading function in the FUN argument.
 
 ```
@@ -76,12 +76,12 @@ data <- sapply(names.train,
 
 Where `names.train` is a list of the names used in the training data loading
 list (which are identical to those in the test data loading list). This easy
-mergin is also possible beacuse the training and test data files have the same
+merging is also possible beacuse the training and test data files have the same
 number of columns containing the same variables for each case. Now, the list
 `data` contains a series of data frames with the merged data, with a name for
 each file loaded.
 All data is indexed when loaded, and the index is used in several merging steps 
-in which order to avoid messing the order or the windows. 
+in which order to avoid messing the order of the time windows. 
 
 Add descriptive names and label the data
 ----------------------------------------
@@ -134,23 +134,22 @@ seconds corresponding to the center of each window, we just need to multiply
 the window number in the data set by 1.28 (see variable window.sep).
 
 Finally, the three columns `subject`, `activity`, and `time`, are added to the 
-561-columns data frame in `data$X`. Now, we have a tidy dataset with labelled 
+561-columns data frame in `data$X`. Now, we have a tidy data set with labelled 
 columns and activities.
 
 ###Inertial signals data
 
-
 The data corresponding to the inertial signals is also loaded and a tidy,
-conveniently labelled data set is created for it. Since this data has a
+conveniently labelled, data set is created for it. Since this data has a
 structure that is different from the data for the derived variables, it has to
-be kept in a separate dataset. Please, refer to the last section with example 
+be kept in a separate data set. Please, refer to the last section with example 
 output, to see how these two data sets are organized. 
 
 Extract the means and standard deviations
 -----------------------------------------
 
 A subset of column names is selected searching with the command `grep` for the
-strings 'mean()' and 'std()' in the names and keeping the names for activity and
+strings 'mean' and 'std' in the names and keeping the names for activity and
 subject. The variables of the type "meanFreq" are not selected, I choose to 
 ignore them, since they are not simple means of variables, but a weighted mean 
 of the frequencies.
@@ -170,8 +169,8 @@ averages.tidy <- aggregate(. ~ subject + activity, data=data[["X"]],
 ```
 
 This data frame will be saved as a text file with field separate by spaces,
-under the name *averages-tidy.txt*. The *windows* column is replaced in this data
-set with a *windowcount* column that contains the number of windows for the
+under the name *averages-tidy.txt*. The *windows* column is replaced in this 
+data set with a *windowcount* column that contains the number of windows for the
 subject/activity combination.  The file *averages-tidy.txt* is the only disk 
 output of the script (apart from the data download timestamp).
 
