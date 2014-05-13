@@ -102,7 +102,7 @@ following columns:
 | activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
 | set         | Factor  | Set {'Training', 'Test'} | Whether the row was originally in the training or test set |
 | window      | Integer | Interval [1, 95] | Number of the time window from which the feature was extracted. |
-| Other 561 columns with the features values (see appendix) |
+| Other 561 columns with all the features values (see appendix) |
 
 
 ### Inertial data
@@ -132,7 +132,7 @@ for means and standard deviations. Stored in the variable `data.mean.sd`.
 | activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
 | set         | Factor  | Set {'Training', 'Test'} | Whether the row was originally in the training or test set |
 | window      | Integer | Interval [1, 95] | Number of the time window from which the feature was extracted. |
-| Other 78 columns with the features values (see appendix) |
+| Other 78 columns with the selected features values (see appendix) |
 
 
 ### Averages for all variables
@@ -146,7 +146,7 @@ and in the submitted space delimited file *averages-tidy.txt*.
 | subject     | Integer | Interval [1, 30]     | Experimental subject             |
 | activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
 | windowcount | Integer | Interval [36, 95] | Number of windows over which the average was calculated |
-| Other 561 columns corresponding to the averages of the feature values (see Appendix) |
+| Other 561 columns corresponding to the averages of all the feature values (see Appendix) |
 
 
 ### Appendix - Column description for the 561 features
