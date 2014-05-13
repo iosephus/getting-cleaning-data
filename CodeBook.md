@@ -5,8 +5,8 @@ A brief description of how the data, as organized in the original files, will be
 given, followed by an explanation of how the data is organized in the tidy data 
 sets created by the processing script (*run_analysis.R*).
 
-Original data set
------------------
+Original data sets
+------------------
 
 ###Documentation files
 
@@ -80,5 +80,33 @@ a sampling frequency of 50 Hz..
 
 Tidy data sets
 --------------
+
+The tidy data sets contain data from the original data sets, that has been 
+reorganized, by operations such as merging, melting (combining different 
+columns into a single one with an additional column describing the original
+column for the variable), and differentiating or removing duplicates when
+needed. Some new information that is implicit in the original data set have been
+added, this is the case of the temporal window number for the features and the
+sample number for the inertial data.  
+
+The next sections describe the columns for the tidy data sets.
+
+### Features
+
+This tidy data set of feature is stored in the variable data$X. It has the
+following columns:
+
+| Column name | Type    | Possible values   | Description
+|-------------|---------|-------------------|------------
+| subject     | Integer | Range 1-30        |
+| activity    | Factor  | 'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS',
+'SITTING', 'STANDING' 
+'LAYING' |
+| window      | Integer | Positive integers | Ordinal number of the temporal 
+window from which the feature was extracted. 
+| set         | Factor  | 'Training', 'Test' | Whether the row was originally in
+the training or test set.
+
+
 
 
