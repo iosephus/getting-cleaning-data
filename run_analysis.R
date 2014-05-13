@@ -4,6 +4,8 @@
 ##                                                                            ##
 ################################################################################
 
+library(reshape2)
+
 ################################################################################
 ## Parameter definition section                                               ##
 ##                                                                            ##
@@ -92,8 +94,12 @@ relevant.file.selector <- !grepl("README[.]txt$", zfilenames) &
                           !grepl("features_info[.]txt$", zfilenames)
 
 # Remove inertial signal files from list
+
+if (ignore.inertial) {
 relevant.file.selector <- relevant.file.selector & 
                               !grepl("[Ii]nertial [Ss]ignals", zfilenames)
+}
+
 			  zfilenames <- zfilenames[relevant.file.selector]
 message(sprintf("Keeping only relevant files (%d):", 
                 length(zfilenames)))
