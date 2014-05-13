@@ -99,10 +99,8 @@ following columns:
 | Column name | Type    | Possible values   | Description                      |
 |-------------|---------|-------------------|----------------------------------|
 | subject     | Integer | Range 1-30        | Experimental subject             |
-| activity    | Factor  | 'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS',
-'SITTING', 'STANDING', 'LAYING' | |
-| window      | Integer | Positive integers | Number of the time window from
-which the feature was extracted. |
+| activity    | Factor  | 'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING' | Experimental activity |
+| window      | Integer | Positive integers | Number of the time window from which the feature was extracted. |
 | set         | Factor  | 'Training', 'Test'| Whether the row was originally in
 the training or test set.
 
