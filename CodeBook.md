@@ -1,14 +1,14 @@
 Codebook for the Getting and Cleaning Data course project
 =========================================================
 
-A brief description of how the data is organized in the original files will be
-done, followed by an explanation of how the data is organized by the processing
-script (*run_analysis.R*).
+A brief description of how the data, as organized in the original files, will be
+given, followed by an explanation of how the data is organized in the tidy data 
+sets created by the processing script (*run_analysis.R*).
 
 Original data set
 -----------------
 
-##Documentation files
+###Documentation files
 
 Two explanatory files can be found in the root folder of the data set 
 (*'UCI HAR Dataset'*). 
@@ -18,14 +18,14 @@ and how the data was gathered, It also describes the general organization of
 the data set files, and the filtering scheme and rolling windows procedure used 
 to generate the inertial data vectors from the raw sensor data. It also mentions
 that features were derived from the inertial data vectors and refers to
-*features_info.txt* for a description. The file *features_info.txt* contains
+*features_info.txt* for a description.
  
 The file *features_info.txt* contains a description of the magnitudes computed
 for each inertial data vector and the statistical feature calculated for them 
 (mean, standard deviation, min, max, etc.), which form the columns in the 
 features data set.
 
-## Metadata
+### Metadata
 
 Two files with metadata can be found in the dataset. The file *features.txt*
 contains two columns, one with an index and a second column with the feature
@@ -38,7 +38,7 @@ activities.
 This two metadata files are key to be able to properly label the tidy datasets 
 later.
 
-## Data
+### Data
 
 The original data set is divided in a training and a test set, which are
 contained in two different folders with the self explanatory names *train* and
@@ -81,4 +81,4 @@ a sampling frequency of 50 Hz..
 Tidy data sets
 --------------
 
-TODO!!!
+
