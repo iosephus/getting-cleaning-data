@@ -162,10 +162,13 @@ columns and activities.
 ###Inertial signals data
 
 The data corresponding to the inertial signals is also loaded and a tidy,
-conveniently labelled, data set is created for it. Since this data has a
-structure that is different from the data for the derived variables, it has to
-be kept in a separate data set. Please, refer to the last section with example 
-output, to see how this extra data sets is organized.
+conveniently labelled, data set is created for it. In this step it's important
+to deduplicate the data, since the rolling windows have 50% overlap, the 
+128-columns rows in these files contain duplicate data. This is done in the
+function `make.inertial4tidy`. Since this data has a structure that is 
+different from the data for the derived variables, it has to be kept in a 
+separate data set. Please, refer to the last section with example output, to 
+see how this extra data set is organized.
 
 Extract the means and standard deviations
 -----------------------------------------
