@@ -44,7 +44,7 @@ load.list.train <- list(
     total_acc_x="UCI HAR Dataset/train/Inertial Signals/total_acc_x_train.txt",
     total_acc_y="UCI HAR Dataset/train/Inertial Signals/total_acc_y_train.txt",
     total_acc_z="UCI HAR Dataset/train/Inertial Signals/total_acc_z_train.txt"
-))
+)
 ```
 
 Please, note that the literal on the right is included here for documentation 
