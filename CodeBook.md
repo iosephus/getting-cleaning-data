@@ -102,6 +102,126 @@ following columns:
 | activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
 | set         | Factor  | Set {'Training', 'Test'} | Whether the row was originally in the training or test set |
 | window      | Integer | Interval [1, 95] | Number of the time window from which the feature was extracted. |
+
+
+### Inertial data
+
+| Column name | Type    | Possible values   | Description                      |
+|-------------|---------|-------------------|----------------------------------|
+| subject     | Integer | Interval [1, 30]     | Experimental subject             |
+| activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
+| sample      | Integer | Interval [1, 6144] | Ordinal inertial data sample number |
+| component   | Factor  | Set {'x', 'y', 'z'} | Component of the 3D XYZ vector        |
+| total_acc   | Double  | Interval [-1.7, 2.2] | Acceleration component measured by the accelerometer sensor signal in standard *g* units |
+| body_acc    | Double  | Interval [-1.4, 1.3] | Calculated component of body acceleration |
+| body_gyro   | Double  | Interval [-6, 5.8] | Angular velocity component measured by the gyroscope sensor in *radians/second* |
+| Other 561 columns corresponding to the features (see appendix) |
+
+
+### Means and standard deviations only
+
+
+| Column name | Type    | Possible values   | Description                      |
+|-------------|---------|-------------------|----------------------------------|
+| subject     | Integer | Interval [1, 30]     | Experimental subject             |
+| activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
+| set         | Factor  | Set {'Training', 'Test'} | Whether the row was originally in the training or test set |
+| window      | Integer | Interval [1, 95] | Number of the time window from which the feature was extracted. |
+| tBodyAcc_mean_X | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-X* |
+| tBodyAcc_mean_Y | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Y* |
+| tBodyAcc_mean_Z | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Z* |
+| tBodyAcc_std_X | Double | Interval [-1, 1] | Feature *tBodyAcc-std()-X* |
+| tBodyAcc_std_Y | Double | Interval [-1, 1] | Feature *tBodyAcc-std()-Y* |
+| tBodyAcc_std_Z | Double | Interval [-1, 1] | Feature *tBodyAcc-std()-Z* |
+| tGravityAcc_mean_X | Double | Interval [-1, 1] | Feature *tGravityAcc-mean()-X* |
+| tGravityAcc_mean_Y | Double | Interval [-1, 1] | Feature *tGravityAcc-mean()-Y* |
+| tGravityAcc_mean_Z | Double | Interval [-1, 1] | Feature *tGravityAcc-mean()-Z* |
+| tGravityAcc_std_X | Double | Interval [-1, 1] | Feature *tGravityAcc-std()-X* |
+| tGravityAcc_std_Y | Double | Interval [-1, 1] | Feature *tGravityAcc-std()-Y* |
+| tGravityAcc_std_Z | Double | Interval [-1, 1] | Feature *tGravityAcc-std()-Z* |
+| tBodyAccJerk_mean_X | Double | Interval [-1, 1] | Feature *tBodyAccJerk-mean()-X* |
+| tBodyAccJerk_mean_Y | Double | Interval [-1, 1] | Feature *tBodyAccJerk-mean()-Y* |
+| tBodyAccJerk_mean_Z | Double | Interval [-1, 1] | Feature *tBodyAccJerk-mean()-Z* |
+| tBodyAccJerk_std_X | Double | Interval [-1, 1] | Feature *tBodyAccJerk-std()-X* |
+| tBodyAccJerk_std_Y | Double | Interval [-1, 1] | Feature *tBodyAccJerk-std()-Y* |
+| tBodyAccJerk_std_Z | Double | Interval [-1, 1] | Feature *tBodyAccJerk-std()-Z* |
+| tBodyGyro_mean_X | Double | Interval [-1, 1] | Feature *tBodyGyro-mean()-X* |
+| tBodyGyro_mean_Y | Double | Interval [-1, 1] | Feature *tBodyGyro-mean()-Y* |
+| tBodyGyro_mean_Z | Double | Interval [-1, 1] | Feature *tBodyGyro-mean()-Z* |
+| tBodyGyro_std_X | Double | Interval [-1, 1] | Feature *tBodyGyro-std()-X* |
+| tBodyGyro_std_Y | Double | Interval [-1, 1] | Feature *tBodyGyro-std()-Y* |
+| tBodyGyro_std_Z | Double | Interval [-1, 1] | Feature *tBodyGyro-std()-Z* |
+| tBodyGyroJerk_mean_X | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-mean()-X* |
+| tBodyGyroJerk_mean_Y | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-mean()-Y* |
+| tBodyGyroJerk_mean_Z | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-mean()-Z* |
+| tBodyGyroJerk_std_X | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-std()-X* |
+| tBodyGyroJerk_std_Y | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-std()-Y* |
+| tBodyGyroJerk_std_Z | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-std()-Z* |
+| tBodyAccMag_mean | Double | Interval [-1, 1] | Feature *tBodyAccMag-mean()* |
+| tBodyAccMag_std | Double | Interval [-1, 1] | Feature *tBodyAccMag-std()* |
+| tGravityAccMag_mean | Double | Interval [-1, 1] | Feature *tGravityAccMag-mean()* |
+| tGravityAccMag_std | Double | Interval [-1, 1] | Feature *tGravityAccMag-std()* |
+| tBodyAccJerkMag_mean | Double | Interval [-1, 1] | Feature *tBodyAccJerkMag-mean()* |
+| tBodyAccJerkMag_std | Double | Interval [-1, 1] | Feature *tBodyAccJerkMag-std()* |
+| tBodyGyroMag_mean | Double | Interval [-1, 1] | Feature *tBodyGyroMag-mean()* |
+| tBodyGyroMag_std | Double | Interval [-1, 1] | Feature *tBodyGyroMag-std()* |
+| tBodyGyroJerkMag_mean | Double | Interval [-1, 1] | Feature *tBodyGyroJerkMag-mean()* |
+| tBodyGyroJerkMag_std | Double | Interval [-1, 1] | Feature *tBodyGyroJerkMag-std()* |
+| fBodyAcc_mean_X | Double | Interval [-1, 1] | Feature *fBodyAcc-mean()-X* |
+| fBodyAcc_mean_Y | Double | Interval [-1, 1] | Feature *fBodyAcc-mean()-Y* |
+| fBodyAcc_mean_Z | Double | Interval [-1, 1] | Feature *fBodyAcc-mean()-Z* |
+| fBodyAcc_std_X | Double | Interval [-1, 1] | Feature *fBodyAcc-std()-X* |
+| fBodyAcc_std_Y | Double | Interval [-1, 1] | Feature *fBodyAcc-std()-Y* |
+| fBodyAcc_std_Z | Double | Interval [-1, 1] | Feature *fBodyAcc-std()-Z* |
+| fBodyAcc_meanFreq_X | Double | Interval [-1, 1] | Feature *fBodyAcc-meanFreq()-X* |
+| fBodyAcc_meanFreq_Y | Double | Interval [-1, 1] | Feature *fBodyAcc-meanFreq()-Y* |
+| fBodyAcc_meanFreq_Z | Double | Interval [-1, 1] | Feature *fBodyAcc-meanFreq()-Z* |
+| fBodyAccJerk_mean_X | Double | Interval [-1, 1] | Feature *fBodyAccJerk-mean()-X* |
+| fBodyAccJerk_mean_Y | Double | Interval [-1, 1] | Feature *fBodyAccJerk-mean()-Y* |
+| fBodyAccJerk_mean_Z | Double | Interval [-1, 1] | Feature *fBodyAccJerk-mean()-Z* |
+| fBodyAccJerk_std_X | Double | Interval [-1, 1] | Feature *fBodyAccJerk-std()-X* |
+| fBodyAccJerk_std_Y | Double | Interval [-1, 1] | Feature *fBodyAccJerk-std()-Y* |
+| fBodyAccJerk_std_Z | Double | Interval [-1, 1] | Feature *fBodyAccJerk-std()-Z* |
+| fBodyAccJerk_meanFreq_X | Double | Interval [-1, 1] | Feature *fBodyAccJerk-meanFreq()-X* |
+| fBodyAccJerk_meanFreq_Y | Double | Interval [-1, 1] | Feature *fBodyAccJerk-meanFreq()-Y* |
+| fBodyAccJerk_meanFreq_Z | Double | Interval [-1, 1] | Feature *fBodyAccJerk-meanFreq()-Z* |
+| fBodyGyro_mean_X | Double | Interval [-1, 1] | Feature *fBodyGyro-mean()-X* |
+| fBodyGyro_mean_Y | Double | Interval [-1, 1] | Feature *fBodyGyro-mean()-Y* |
+| fBodyGyro_mean_Z | Double | Interval [-1, 1] | Feature *fBodyGyro-mean()-Z* |
+| fBodyGyro_std_X | Double | Interval [-1, 1] | Feature *fBodyGyro-std()-X* |
+| fBodyGyro_std_Y | Double | Interval [-1, 1] | Feature *fBodyGyro-std()-Y* |
+| fBodyGyro_std_Z | Double | Interval [-1, 1] | Feature *fBodyGyro-std()-Z* |
+| fBodyGyro_meanFreq_X | Double | Interval [-1, 1] | Feature *fBodyGyro-meanFreq()-X* |
+| fBodyGyro_meanFreq_Y | Double | Interval [-1, 1] | Feature *fBodyGyro-meanFreq()-Y* |
+| fBodyGyro_meanFreq_Z | Double | Interval [-1, 1] | Feature *fBodyGyro-meanFreq()-Z* |
+| fBodyAccMag_mean | Double | Interval [-1, 1] | Feature *fBodyAccMag-mean()* |
+| fBodyAccMag_std | Double | Interval [-1, 1] | Feature *fBodyAccMag-std()* |
+| fBodyAccMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyAccMag-meanFreq()* |
+| fBodyBodyAccJerkMag_mean | Double | Interval [-1, 1] | Feature *fBodyBodyAccJerkMag-mean()* |
+| fBodyBodyAccJerkMag_std | Double | Interval [-1, 1] | Feature *fBodyBodyAccJerkMag-std()* |
+| fBodyBodyAccJerkMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyBodyAccJerkMag-meanFreq()* |
+| fBodyBodyGyroMag_mean | Double | Interval [-1, 1] | Feature *fBodyBodyGyroMag-mean()* |
+| fBodyBodyGyroMag_std | Double | Interval [-1, 1] | Feature *fBodyBodyGyroMag-std()* |
+| fBodyBodyGyroMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyBodyGyroMag-meanFreq()* |
+| fBodyBodyGyroJerkMag_mean | Double | Interval [-1, 1] | Feature *fBodyBodyGyroJerkMag-mean()* |
+| fBodyBodyGyroJerkMag_std | Double | Interval [-1, 1] | Feature *fBodyBodyGyroJerkMag-std()* |
+| fBodyBodyGyroJerkMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyBodyGyroJerkMag-meanFreq()* |
+
+
+### Averages for all variables
+
+| Column name | Type    | Possible values   | Description                      |
+|-------------|---------|-------------------|----------------------------------|
+| subject     | Integer | Interval [1, 30]     | Experimental subject             |
+| activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
+| windowcount | Integer | Interval [36, 95] | Number of windows over which the average was calculated |
+| Other 561 columns corresponding to the averages of the variables described in data$X |
+
+
+### Appendix - Column description for the 561 features
+
+| Column name | Type    | Possible values   | Description                      |
+|-------------|---------|-------------------|----------------------------------|
 | tBodyAcc_mean_X | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-X* |
 | tBodyAcc_mean_Y | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Y* |
 | tBodyAcc_mean_Z | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Z* |
@@ -663,117 +783,4 @@ following columns:
 | angleX_gravityMean | Double | Interval [-1, 1] | Feature *angle(X,gravityMean)* |
 | angleY_gravityMean | Double | Interval [-1, 1] | Feature *angle(Y,gravityMean)* |
 | angleZ_gravityMean | Double |Interval [-1, 1] | Feature *angle(Z,gravityMean)* |
-
-
-### Inertial data
-
-| Column name | Type    | Possible values   | Description                      |
-|-------------|---------|-------------------|----------------------------------|
-| subject     | Integer | Interval [1, 30]     | Experimental subject             |
-| activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
-| sample      | Integer | Interval [1, 6144] | Ordinal inertial data sample number |
-| component   | Factor  | Set {'x', 'y', 'z'} | Component of the 3D XYZ vector        |
-| total_acc   | Double  | Interval [-1.7, 2.2] | Acceleration component measured by the accelerometer sensor signal in standard *g* units |
-| body_acc    | Double  | Interval [-1.4, 1.3] | Calculated component of body acceleration |
-| body_gyro   | Double  | Interval [-6, 5.8] | Angular velocity component measured by the gyroscope sensor in *radians/second* |
-
-
-### Means and standard deviations only
-
-
-| Column name | Type    | Possible values   | Description                      |
-|-------------|---------|-------------------|----------------------------------|
-| subject     | Integer | Interval [1, 30]     | Experimental subject             |
-| activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
-| set         | Factor  | Set {'Training', 'Test'} | Whether the row was originally in the training or test set |
-| window      | Integer | Interval [1, 95] | Number of the time window from which the feature was extracted. |
-| tBodyAcc_mean_X | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-X* |
-| tBodyAcc_mean_Y | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Y* |
-| tBodyAcc_mean_Z | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Z* |
-| tBodyAcc_std_X | Double | Interval [-1, 1] | Feature *tBodyAcc-std()-X* |
-| tBodyAcc_std_Y | Double | Interval [-1, 1] | Feature *tBodyAcc-std()-Y* |
-| tBodyAcc_std_Z | Double | Interval [-1, 1] | Feature *tBodyAcc-std()-Z* |
-| tGravityAcc_mean_X | Double | Interval [-1, 1] | Feature *tGravityAcc-mean()-X* |
-| tGravityAcc_mean_Y | Double | Interval [-1, 1] | Feature *tGravityAcc-mean()-Y* |
-| tGravityAcc_mean_Z | Double | Interval [-1, 1] | Feature *tGravityAcc-mean()-Z* |
-| tGravityAcc_std_X | Double | Interval [-1, 1] | Feature *tGravityAcc-std()-X* |
-| tGravityAcc_std_Y | Double | Interval [-1, 1] | Feature *tGravityAcc-std()-Y* |
-| tGravityAcc_std_Z | Double | Interval [-1, 1] | Feature *tGravityAcc-std()-Z* |
-| tBodyAccJerk_mean_X | Double | Interval [-1, 1] | Feature *tBodyAccJerk-mean()-X* |
-| tBodyAccJerk_mean_Y | Double | Interval [-1, 1] | Feature *tBodyAccJerk-mean()-Y* |
-| tBodyAccJerk_mean_Z | Double | Interval [-1, 1] | Feature *tBodyAccJerk-mean()-Z* |
-| tBodyAccJerk_std_X | Double | Interval [-1, 1] | Feature *tBodyAccJerk-std()-X* |
-| tBodyAccJerk_std_Y | Double | Interval [-1, 1] | Feature *tBodyAccJerk-std()-Y* |
-| tBodyAccJerk_std_Z | Double | Interval [-1, 1] | Feature *tBodyAccJerk-std()-Z* |
-| tBodyGyro_mean_X | Double | Interval [-1, 1] | Feature *tBodyGyro-mean()-X* |
-| tBodyGyro_mean_Y | Double | Interval [-1, 1] | Feature *tBodyGyro-mean()-Y* |
-| tBodyGyro_mean_Z | Double | Interval [-1, 1] | Feature *tBodyGyro-mean()-Z* |
-| tBodyGyro_std_X | Double | Interval [-1, 1] | Feature *tBodyGyro-std()-X* |
-| tBodyGyro_std_Y | Double | Interval [-1, 1] | Feature *tBodyGyro-std()-Y* |
-| tBodyGyro_std_Z | Double | Interval [-1, 1] | Feature *tBodyGyro-std()-Z* |
-| tBodyGyroJerk_mean_X | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-mean()-X* |
-| tBodyGyroJerk_mean_Y | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-mean()-Y* |
-| tBodyGyroJerk_mean_Z | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-mean()-Z* |
-| tBodyGyroJerk_std_X | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-std()-X* |
-| tBodyGyroJerk_std_Y | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-std()-Y* |
-| tBodyGyroJerk_std_Z | Double | Interval [-1, 1] | Feature *tBodyGyroJerk-std()-Z* |
-| tBodyAccMag_mean | Double | Interval [-1, 1] | Feature *tBodyAccMag-mean()* |
-| tBodyAccMag_std | Double | Interval [-1, 1] | Feature *tBodyAccMag-std()* |
-| tGravityAccMag_mean | Double | Interval [-1, 1] | Feature *tGravityAccMag-mean()* |
-| tGravityAccMag_std | Double | Interval [-1, 1] | Feature *tGravityAccMag-std()* |
-| tBodyAccJerkMag_mean | Double | Interval [-1, 1] | Feature *tBodyAccJerkMag-mean()* |
-| tBodyAccJerkMag_std | Double | Interval [-1, 1] | Feature *tBodyAccJerkMag-std()* |
-| tBodyGyroMag_mean | Double | Interval [-1, 1] | Feature *tBodyGyroMag-mean()* |
-| tBodyGyroMag_std | Double | Interval [-1, 1] | Feature *tBodyGyroMag-std()* |
-| tBodyGyroJerkMag_mean | Double | Interval [-1, 1] | Feature *tBodyGyroJerkMag-mean()* |
-| tBodyGyroJerkMag_std | Double | Interval [-1, 1] | Feature *tBodyGyroJerkMag-std()* |
-| fBodyAcc_mean_X | Double | Interval [-1, 1] | Feature *fBodyAcc-mean()-X* |
-| fBodyAcc_mean_Y | Double | Interval [-1, 1] | Feature *fBodyAcc-mean()-Y* |
-| fBodyAcc_mean_Z | Double | Interval [-1, 1] | Feature *fBodyAcc-mean()-Z* |
-| fBodyAcc_std_X | Double | Interval [-1, 1] | Feature *fBodyAcc-std()-X* |
-| fBodyAcc_std_Y | Double | Interval [-1, 1] | Feature *fBodyAcc-std()-Y* |
-| fBodyAcc_std_Z | Double | Interval [-1, 1] | Feature *fBodyAcc-std()-Z* |
-| fBodyAcc_meanFreq_X | Double | Interval [-1, 1] | Feature *fBodyAcc-meanFreq()-X* |
-| fBodyAcc_meanFreq_Y | Double | Interval [-1, 1] | Feature *fBodyAcc-meanFreq()-Y* |
-| fBodyAcc_meanFreq_Z | Double | Interval [-1, 1] | Feature *fBodyAcc-meanFreq()-Z* |
-| fBodyAccJerk_mean_X | Double | Interval [-1, 1] | Feature *fBodyAccJerk-mean()-X* |
-| fBodyAccJerk_mean_Y | Double | Interval [-1, 1] | Feature *fBodyAccJerk-mean()-Y* |
-| fBodyAccJerk_mean_Z | Double | Interval [-1, 1] | Feature *fBodyAccJerk-mean()-Z* |
-| fBodyAccJerk_std_X | Double | Interval [-1, 1] | Feature *fBodyAccJerk-std()-X* |
-| fBodyAccJerk_std_Y | Double | Interval [-1, 1] | Feature *fBodyAccJerk-std()-Y* |
-| fBodyAccJerk_std_Z | Double | Interval [-1, 1] | Feature *fBodyAccJerk-std()-Z* |
-| fBodyAccJerk_meanFreq_X | Double | Interval [-1, 1] | Feature *fBodyAccJerk-meanFreq()-X* |
-| fBodyAccJerk_meanFreq_Y | Double | Interval [-1, 1] | Feature *fBodyAccJerk-meanFreq()-Y* |
-| fBodyAccJerk_meanFreq_Z | Double | Interval [-1, 1] | Feature *fBodyAccJerk-meanFreq()-Z* |
-| fBodyGyro_mean_X | Double | Interval [-1, 1] | Feature *fBodyGyro-mean()-X* |
-| fBodyGyro_mean_Y | Double | Interval [-1, 1] | Feature *fBodyGyro-mean()-Y* |
-| fBodyGyro_mean_Z | Double | Interval [-1, 1] | Feature *fBodyGyro-mean()-Z* |
-| fBodyGyro_std_X | Double | Interval [-1, 1] | Feature *fBodyGyro-std()-X* |
-| fBodyGyro_std_Y | Double | Interval [-1, 1] | Feature *fBodyGyro-std()-Y* |
-| fBodyGyro_std_Z | Double | Interval [-1, 1] | Feature *fBodyGyro-std()-Z* |
-| fBodyGyro_meanFreq_X | Double | Interval [-1, 1] | Feature *fBodyGyro-meanFreq()-X* |
-| fBodyGyro_meanFreq_Y | Double | Interval [-1, 1] | Feature *fBodyGyro-meanFreq()-Y* |
-| fBodyGyro_meanFreq_Z | Double | Interval [-1, 1] | Feature *fBodyGyro-meanFreq()-Z* |
-| fBodyAccMag_mean | Double | Interval [-1, 1] | Feature *fBodyAccMag-mean()* |
-| fBodyAccMag_std | Double | Interval [-1, 1] | Feature *fBodyAccMag-std()* |
-| fBodyAccMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyAccMag-meanFreq()* |
-| fBodyBodyAccJerkMag_mean | Double | Interval [-1, 1] | Feature *fBodyBodyAccJerkMag-mean()* |
-| fBodyBodyAccJerkMag_std | Double | Interval [-1, 1] | Feature *fBodyBodyAccJerkMag-std()* |
-| fBodyBodyAccJerkMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyBodyAccJerkMag-meanFreq()* |
-| fBodyBodyGyroMag_mean | Double | Interval [-1, 1] | Feature *fBodyBodyGyroMag-mean()* |
-| fBodyBodyGyroMag_std | Double | Interval [-1, 1] | Feature *fBodyBodyGyroMag-std()* |
-| fBodyBodyGyroMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyBodyGyroMag-meanFreq()* |
-| fBodyBodyGyroJerkMag_mean | Double | Interval [-1, 1] | Feature *fBodyBodyGyroJerkMag-mean()* |
-| fBodyBodyGyroJerkMag_std | Double | Interval [-1, 1] | Feature *fBodyBodyGyroJerkMag-std()* |
-| fBodyBodyGyroJerkMag_meanFreq | Double | Interval [-1, 1] | Feature *fBodyBodyGyroJerkMag-meanFreq()* |
-
-
-### Averages for all variables
-
-| Column name | Type    | Possible values   | Description                      |
-|-------------|---------|-------------------|----------------------------------|
-| subject     | Integer | Interval [1, 30]     | Experimental subject             |
-| activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
-| windowcount | Integer | Interval [36, 95] | Number of windows over which the average was calculated |
-| Other 561 columns corresponding to the averages of the variables described in data$X |
 
