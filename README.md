@@ -174,9 +174,8 @@ Extract the means and standard deviations
 -----------------------------------------
 
 A subset of column names is selected searching with the command `grep` for the
-strings 'mean' and 'std' in the data column names. The variables of the type 
-"meanFreq" are not selected, I choose to ignore them, since they are not simple 
-means of variables, but a weighted mean of the frequencies.
+strings 'mean' and 'std' in the data column names. This includes the variables 
+of the type "meanFreq", which are weighted means.
 
 Once the list is built a new data frame is created containing the same number of
 rows, and only the selected data columns (plus the factor columns for subject,
