@@ -664,3 +664,16 @@ following columns:
 | angleY_gravityMean | Double | Interval [-1, 1] | Feature *angle(Y,gravityMean)* |
 | angleZ_gravityMean | Double |Interval [-1, 1] | Feature *angle(Z,gravityMean)* |
 
+
+### Inertial data
+
+| Column name | Type    | Possible values   | Description                      |
+|-------------|---------|-------------------|----------------------------------|
+| subject     | Integer | Interval [1, 30]     | Experimental subject             |
+| activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
+| sample      | Integer | Interval [1, 6144] | Ordinal inertial data sample number |
+| component   | Factor  | Set {'x', 'y', 'z'} | Component of the 3D XYZ vector        |
+| total_acc   | Double  | Interval [-1.7, 2.2] | Acceleration component measured by the accelerometer sensor signal in standard *g* units |
+| body_acc    | Double  | Interval [-1.4, 1.3] | Calculated component of body acceleration |
+| body_gyro   | Double  | Interval [-6, 5.8] | Angular velocity component measured by the gyroscope sensor in *radians/second* |
+

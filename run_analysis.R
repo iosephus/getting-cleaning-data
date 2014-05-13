@@ -270,7 +270,7 @@ names(data$y)[match("V1", names(data$y))] <- c("activityCode")
 # Add new columns with subject and activity data to 
 # the 561-feature vectors data set
 
-info <- merge(merge(data$y, data$subject, by="idx"), activity_labels, 
+info <- merge(merge(data$y, data$subject, by=c("idx", "set")), activity_labels, 
 	      by="activityCode")
 
 info$activityCode <- NULL
@@ -327,9 +327,9 @@ str(data$X, list.len=num.lines.info)
 # overlap)
 make.inertial4tidy <- function (n) {
     message(sprintf("    %s", n))
-    z <- merge(data[[n]], info, by="idx")
-    z <- z[order(z$idx),]
-    z <- melt(z, id=c("subject", "activity", "window"))
+    z <- merge(data[[n]], info, by=c("idx", "set"))
+    z <- melt(z, id=c("idx", "subject", "activity", "set", "window"))
+    z <- z[order(z$idx, z$variable),]
     reduced.sample <- rep((1:128), length.out=nrow(z))
     z$sample <- as.integer((z$window - 1) * 64 + reduced.sample)
     z$idx <- NULL
@@ -369,22 +369,17 @@ if (!ignore.inertial) {
     rm(inertial4tidy)
 
     message("Melting and relabelling total_acc for final merge")
-    total_acc <- melt(total_acc, id=c("subject", "activity", "sample"))
+    total_acc <- melt(total_acc, id=c("subject", "activity", "set", "sample"))
     names(total_acc)[match(c("variable", "value"), names(total_acc))] <- 
 	                                           c("component", "total_acc")
-    total_acc <- total_acc[order(total_acc$subject, 
-				 total_acc$activity,
-				 total_acc$sample,
-				 total_acc$component
-				 ),]
-
+    
     message("Melting and relabelling body_acc for final merge")
-    body_acc <- melt(body_acc, id=c("subject", "activity", "sample"))
+    body_acc <- melt(body_acc, id=c("subject", "activity", "set", "sample"))
     names(body_acc)[match(c("variable", "value"), names(body_acc))] <- 
 	                                           c("component", "body_acc")
 
     message("Melting and relabelling body_gyro for final merge")
-    body_gyro <- melt(body_gyro, id=c("subject", "activity", "sample"))
+    body_gyro <- melt(body_gyro, id=c("subject", "activity", "set", "sample"))
     names(body_gyro)[match(c("variable", "value"), names(body_gyro))] <- 
 	                                           c("component", "body_gyro")
 
