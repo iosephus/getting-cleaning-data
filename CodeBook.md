@@ -153,8 +153,8 @@ and in the submitted space delimited file *averages-tidy.txt*.
 
 These are the column names for the features and feature averages data sets.
 
-| Column name | Type | In mean/sd data set | Possible values   | Description   |
-|-------------|---------|-------------------|----------------------------------|
+| Column name | In `data.mean.sd` | Type | Possible values   | Description   |
+|-------------|------|------------|-------|----------------------------------|
 | tBodyAcc_mean_X | Yes | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-X* |
 | tBodyAcc_mean_Y | Yes | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Y* |
 | tBodyAcc_mean_Z | Yes | Double | Interval [-1, 1] | Feature *tBodyAcc-mean()-Z* |
