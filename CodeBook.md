@@ -93,7 +93,7 @@ The next sections describe the columns for the tidy data sets.
 
 ### Features
 
-This tidy data set of feature is stored in the variable data$X. It has the
+This tidy data set of feature is stored in the variable `data$X`. It has the
 following columns:
 
 | Column name | Type    | Possible values   | Description                      |
@@ -102,9 +102,13 @@ following columns:
 | activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
 | set         | Factor  | Set {'Training', 'Test'} | Whether the row was originally in the training or test set |
 | window      | Integer | Interval [1, 95] | Number of the time window from which the feature was extracted. |
+| Other 561 columns with the features values (see appendix) |
 
 
 ### Inertial data
+
+This is the measured data for acceleration and angular velocities, 
+and a calculation of body acceleration. Stored in the variable `data.inertial.tidy`.
 
 | Column name | Type    | Possible values   | Description                      |
 |-------------|---------|-------------------|----------------------------------|
@@ -115,11 +119,12 @@ following columns:
 | total_acc   | Double  | Interval [-1.7, 2.2] | Acceleration component measured by the accelerometer sensor signal in standard *g* units |
 | body_acc    | Double  | Interval [-1.4, 1.3] | Calculated component of body acceleration |
 | body_gyro   | Double  | Interval [-6, 5.8] | Angular velocity component measured by the gyroscope sensor in *radians/second* |
-| Other 561 columns corresponding to the features (see appendix) |
 
 
 ### Means and standard deviations only
 
+This data set is a subset of the tidy features data set, that only contains the columns
+for means and standard deviations. Stored in the variable `data.mean.sd`.
 
 | Column name | Type    | Possible values   | Description                      |
 |-------------|---------|-------------------|----------------------------------|
@@ -210,15 +215,21 @@ following columns:
 
 ### Averages for all variables
 
+This data set contains the averages of the features for each subject/activity combination, 
+taken over all the windows present for each combination. Stored in the variable `averages.tidy` 
+and in the submitted space delimited file *averages-tidy.txt*.
+
 | Column name | Type    | Possible values   | Description                      |
 |-------------|---------|-------------------|----------------------------------|
 | subject     | Integer | Interval [1, 30]     | Experimental subject             |
 | activity    | Factor  | Set {'WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'} | Experimental activity |
 | windowcount | Integer | Interval [36, 95] | Number of windows over which the average was calculated |
-| Other 561 columns corresponding to the averages of the variables described in data$X |
+| Other 561 columns corresponding to the averages of the feature values (see Appendix) |
 
 
 ### Appendix - Column description for the 561 features
+
+These are the column names for the features and feature averages data sets.
 
 | Column name | Type    | Possible values   | Description                      |
 |-------------|---------|-------------------|----------------------------------|
